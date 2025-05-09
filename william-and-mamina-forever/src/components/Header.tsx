@@ -5,7 +5,7 @@ import { ArrowLeft, User } from 'lucide-react';
 
 const titles: Record<string, string> = {
   '/': 'Home',
-  '/messages': 'Messages',
+  '/notes': 'Notes',
   '/gallery': 'Gallery',
   '/map': 'Map',
   '/settings': 'Settings',
