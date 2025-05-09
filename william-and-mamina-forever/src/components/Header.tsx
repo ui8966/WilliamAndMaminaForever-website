@@ -16,15 +16,24 @@ export default function Header() {
   const isHome = pathname === '/';
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 pt-[env(safe-area-inset-top)] bg-white bg-opacity-90 backdrop-blur-md flex items-center justify-between px-6 h-16 shadow-md">
-     <button
+ <header
+   className="
+     fixed top-0 inset-x-0 z-50
+     pt-[env(safe-area-inset-top)]
+     bg-white bg-opacity-90 backdrop-blur-md
+     flex items-center justify-between
+     px-8 h-24                  /* ← ~96 px header */
+     shadow-md
+   "
+ >
+         <button
         onClick={() => (isHome ? null : navigate(-1))}
-        className="p-3"
+        className="p-4"
       >
         {isHome ? <Menu /> : <ArrowLeft />}
       </button>
       <h1 className="text-xl font-heading">{titles[pathname] || ''}</h1>
-      <User className="w-10 h-10 text-pink-600 cursor-pointer" />
+      <User className="w-12 h-12 text-pink-600 cursor-pointer" />
     </header>
   );
 }
