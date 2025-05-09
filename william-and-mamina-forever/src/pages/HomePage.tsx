@@ -1,5 +1,4 @@
 // src/pages/HomePage.tsx
-import React from 'react'
 import TogetherTimer from '../components/TogetherTimer'
 import CountdownTimer from '../components/CountdownTimer'
 import FloatingHearts from '../components/FloatingHearts'

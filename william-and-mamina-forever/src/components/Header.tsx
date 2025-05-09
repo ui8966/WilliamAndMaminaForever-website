@@ -1,5 +1,4 @@
 // src/components/Header.tsx
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Menu } from 'lucide-react';
 
