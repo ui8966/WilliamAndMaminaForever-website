@@ -1,5 +1,5 @@
 // src/components/TimerWithHoverHeart.tsx
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 export default function TimerWithHoverHeart({ children }: { children: ReactNode }) {
   return (
