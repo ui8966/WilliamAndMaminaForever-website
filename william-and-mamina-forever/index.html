@@ -11,7 +11,7 @@
     rel="stylesheet">
 
   <!-- 2️⃣ Tailwind via CDN with custom theme extensions -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -23,21 +23,31 @@
           backgroundImage: {
             'pink-gradient': 'linear-gradient(135deg, #ffe4e1, #fff0f5)',
           },
-          animation: {
-            'float-hearts': 'float 6s ease-in-out infinite',
-            'bounce-slow': 'bounce 2s infinite',
-          },
           keyframes: {
             float: {
               '0%, 100%': { transform: 'translateY(0)' },
-              '50%':    { transform: 'translateY(-20px)' },
+              '50%': { transform: 'translateY(-20px)' },
+            },
+            fall: {
+              '0%':   { transform: 'translateY(-10vh) rotate(0deg)' },
+              '100%': { transform: 'translateY(110vh) rotate(360deg)' },
             },
           },
+          animation: {
+            'float-hearts': 'float 6s ease-in-out infinite',
+            'bounce-slow':  'bounce 2s infinite'
+            },
         }
       }
     }
   </script>
 
+<style>
+    @keyframes fall {
+      0%   { transform: translateY(-10vh) rotate(0deg); }
+      100% { transform: translateY(110vh) rotate(360deg); }
+    }
+  </style>
 
 <body class="bg-pink-50 text-gray-800 font-sans">
   <div id="root"></div>
