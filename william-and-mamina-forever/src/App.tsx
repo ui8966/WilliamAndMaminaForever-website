@@ -1,30 +1,19 @@
 // src/App.tsx
-
-import TogetherTimer   from './components/TogetherTimer'
-import CountdownTimer  from './components/CountdownTimer'
-import FloatingHearts  from './components/FloatingHearts'
-import TimerWithHoverHeart from './components/TimerWithHoverHeart';
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Layout from './layout/Layout'
+import HomePage from './pages/HomePage'
+import MessagesPage from './pages/MessagesPage'
 
 
-
-function App() {
+export default function App() {
   return (
-      <div className="min-h-screen bg-pink-gradient flex flex-col items-center justify-center text-center p-4 font-body">
-        <FloatingHearts />
-      <h1 className="text-4xl md:text-6xl font-heading text-pink-600 mb-6 animate-bounce-slow">
-         💖 William & Mamina Forever 💖
-       </h1>
-
-       <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-md space-y-4">
-         <p className="text-lg">We’ve been together for:</p>
-         <TimerWithHoverHeart><TogetherTimer/></TimerWithHoverHeart>
-         <p className="text-lg">Countdown until we meet again:</p>
-         <TimerWithHoverHeart><CountdownTimer/></TimerWithHoverHeart>
-       </div>
-     </div>
-   )
- }
-
-export default App;
-// src/App.tsx
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="messages" element={<MessagesPage />} />
+        </Route>
+      </Routes>
+    </Router>
+  )
+}
