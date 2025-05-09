@@ -18,27 +18,14 @@ const items = [
 
 export default function BottomNav() {
   return (
-    <nav
-        className="
-            fixed bottom-0 inset-x-0 z-50 
-            pb-[env(safe-area-inset-bottom)] 
-            bg-white bg-opacity-90 backdrop-blur-md 
-            flex justify-around items-center 
-            h-14
-            shadow-inner
-        "
-        >
+    <nav className="fixed bottom-0 inset-x-0 z-50 pb-[env(safe-area-inset-bottom)] bg-white bg-opacity-90 backdrop-blur-md flex justify-around items-center h-16 shadow-inner">
          {items.map(({ to, icon: Icon }, i) => (
         <NavLink
           key={i}
           to={to}
-          className={({ isActive }) =>
-            `flex flex-col items-center text-gray-500 p-2 space-y-1 ${
-              isActive ? 'text-pink-600' : ''
-            }`
-          }
+          className={({ isActive }) => `flex flex-col items-center text-gray-500 p-3 space-y-1 ${isActive ? 'text-pink-600' : ''}`}
         >
-          <Icon className="w-6 h-6" />
+          <Icon className="w-8 h-8" />
           <span className="text-xs">{items[i].label}</span>
           { /* Active indicator */ }
           <div
