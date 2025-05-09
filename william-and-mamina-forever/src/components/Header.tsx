@@ -1,6 +1,6 @@
 // src/components/Header.tsx
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Menu } from 'lucide-react';
+import { ArrowLeft, Menu, User } from 'lucide-react';
 
 const titles: Record<string, string> = {
   '/': 'Home',
@@ -16,19 +16,26 @@ export default function Header() {
   const isHome = pathname === '/';
 
   return (
-    <header className="flex items-center justify-between p-4 bg-white shadow-md">
-      <button
+    <header
+      className="
+        fixed top-0 inset-x-0 z-50 
+        pt-[env(safe-area-inset-top)] 
+        bg-white bg-opacity-90 backdrop-blur-md 
+        flex items-center justify-between 
+        px-4 h-12
+        shadow-md
+      "
+    >
+     <button
         onClick={() => (isHome ? null : navigate(-1))}
         className="p-2"
       >
         {isHome ? <Menu /> : <ArrowLeft />}
       </button>
       <h1 className="text-xl font-heading">{titles[pathname] || ''}</h1>
-      <img
-        src="/avatar.png"
-        alt="Profile"
+      <User
         onClick={() => navigate('/settings')}
-        className="w-8 h-8 rounded-full cursor-pointer"
+        className="w-8 h-8 text-pink-600 cursor-pointer"
       />
     </header>
   );

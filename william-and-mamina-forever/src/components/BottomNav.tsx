@@ -18,8 +18,17 @@ const items = [
 
 export default function BottomNav() {
   return (
-    <nav className="flex justify-around p-2 bg-white shadow-inner">
-      {items.map(({ to, icon: Icon }, i) => (
+    <nav
+        className="
+            fixed bottom-0 inset-x-0 z-50 
+            pb-[env(safe-area-inset-bottom)] 
+            bg-white bg-opacity-90 backdrop-blur-md 
+            flex justify-around items-center 
+            h-14
+            shadow-inner
+        "
+        >
+         {items.map(({ to, icon: Icon }, i) => (
         <NavLink
           key={i}
           to={to}

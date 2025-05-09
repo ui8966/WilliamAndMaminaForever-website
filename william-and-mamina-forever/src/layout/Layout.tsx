@@ -9,7 +9,7 @@ export default function Layout() {
   return (
     <div className="flex flex-col h-screen">
       <Header />
-      <main className="flex-grow overflow-auto">
+      <main className="flex-grow pt-12 pb-14 overflow-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
