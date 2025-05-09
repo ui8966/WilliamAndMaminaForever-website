@@ -1,4 +1,3 @@
-import React from 'react';
 
 export default function PetalBackground() {
   // generate 20 petals
