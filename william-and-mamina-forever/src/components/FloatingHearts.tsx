@@ -14,7 +14,7 @@ export default function FloatingHearts() {
       {hearts.map((h, i) => (
         <div
           key={i}
-          className="absolute text-3xl animate-float-hearts"
+          className="absolute text-5xl animate-float-hearts"
           style={{
             left: h.left,
             bottom: '-2rem',

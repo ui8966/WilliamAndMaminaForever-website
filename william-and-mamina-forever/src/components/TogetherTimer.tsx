@@ -40,8 +40,8 @@ export default function TogetherTimer() {
     return () => clearInterval(id)
   }, [])
 
-  return (
-    <div className="text-2xl font-mono text-pink-600">
+return (
+    <div className="text-4xl md:text-6xl font-mono text-pink-600">
       {diff.years}y {diff.months}m {diff.days}d
     </div>
   )

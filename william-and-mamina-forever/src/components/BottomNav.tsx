@@ -10,7 +10,7 @@ import {
 
 const items = [
   { to: '/', icon: Heart, label: 'Home' },
-  { to: '/messages', icon: MessageSquare, label: 'Messages' },
+  { to: '/messages', icon: MessageSquare, label: 'Notes' },
   { to: '/gallery', icon: Camera, label: 'Gallery' },
   { to: '/map', icon: MapPin, label: 'Map' },
   { to: '/settings', icon: Settings, label: 'Settings' },
@@ -33,10 +33,10 @@ export default function BottomNav() {
           key={i}
           to={to}
           className={({ isActive }) =>
-            `flex flex-col items-center text-gray-500 p-4 space-y-1 ${isActive ? 'text-pink-600' : ''}`
+            `flex flex-col items-center text-gray-500 p-5 space-y-1 ${isActive ? 'text-pink-600' : ''}`
      }        >
-          <Icon className="w-12 h-12" />
-          <span className="text-xs">{items[i].label}</span>
+          <Icon className="w-14 h-14" />
+          <span className="text-base">{items[i].label}</span>
           { /* Active indicator */ }
           <div
             className={`h-1 w-1 rounded-full bg-pink-600 mt-1 ${
