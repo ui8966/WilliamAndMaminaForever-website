@@ -14,7 +14,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
-          <Route path="messages" element={<MessagesPage />} />
+          <Route path="notes" element={<MessagesPage />} />
           <Route path="gallery" element={<GalleryPage />} />
           <Route path="map" element={<MapPage />} />
           <Route path="settings" element={<SettingsPage />} />
