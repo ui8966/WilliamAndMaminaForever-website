@@ -1,28 +1,32 @@
 // src/components/CountdownTimer.tsx
 import { useEffect, useState } from 'react'
 
-// Your next-meet date:
+// Your next meetup date (midnight local on July 9):
 const MEET_DATE = new Date('2025-07-09T00:00:00')
 
+interface Countdown { days: number; hours: number }
+
+function calculateCountdown(to: Date): Countdown {
+  const now = Date.now()
+  const delta = Math.max(0, to.getTime() - now)
+  const days  = Math.floor(delta / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((delta % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  return { days, hours }
+}
+
 export default function CountdownTimer() {
-  const [days, setDays] = useState(() => {
-    const now = Date.now()
-    const delta = MEET_DATE.getTime() - now
-    return Math.max(0, Math.floor(delta / (1000 * 60 * 60 * 24)))
-  })
+  const [count, setCount] = useState<Countdown>(() => calculateCountdown(MEET_DATE))
 
   useEffect(() => {
     const id = setInterval(() => {
-      const now = Date.now()
-      const delta = MEET_DATE.getTime() - now
-      setDays(Math.max(0, Math.floor(delta / (1000 * 60 * 60 * 24))))
-    }, 60_000) // update once per minute is enough
+      setCount(calculateCountdown(MEET_DATE))
+    }, 60_000) // update hourly
     return () => clearInterval(id)
   }, [])
 
   return (
     <div className="text-2xl font-mono text-pink-600">
-      {days} days
+      {count.days}d {count.hours}h
     </div>
   )
 }

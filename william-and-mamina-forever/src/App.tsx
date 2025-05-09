@@ -3,6 +3,8 @@
 import TogetherTimer   from './components/TogetherTimer'
 import CountdownTimer  from './components/CountdownTimer'
 import FloatingHearts  from './components/FloatingHearts'
+import TimerWithHoverHeart from './components/TimerWithHoverHeart';
+
 
 
 
@@ -16,9 +18,9 @@ function App() {
 
        <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-md space-y-4">
          <p className="text-lg">We’ve been together for:</p>
-         <TogetherTimer />
+         <TimerWithHoverHeart><TogetherTimer/></TimerWithHoverHeart>
          <p className="text-lg">Countdown until we meet again:</p>
-         <CountdownTimer />
+         <TimerWithHoverHeart><CountdownTimer/></TimerWithHoverHeart>
        </div>
      </div>
    )
