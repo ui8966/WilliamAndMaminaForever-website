@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { firestore } from '../lib/firebase'
+import type { QuerySnapshot, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore'
 import {
   collection,
   addDoc,
@@ -10,7 +11,6 @@ import {
   query,
   orderBy,
   onSnapshot,
-  type DocumentData
 } from 'firebase/firestore'
 import { Plus } from 'lucide-react'
 
@@ -34,20 +34,27 @@ export default function NotesPage() {
       collection(firestore, 'notes'),
       orderBy('createdAt', 'desc')
     )
-    const unsub = onSnapshot(notesQuery, snapshot => {
-      const loaded = snapshot.docs.map(doc => {
-        const data = doc.data() as DocumentData
-        return {
-          id: doc.id,
-          content: data.content,
-          author: data.author,
-          createdAt: data.createdAt?.toDate() ?? new Date(),
+  const unsub = onSnapshot(
+    notesQuery,
+    // ← annotate snapshot as QuerySnapshot<DocumentData>
+    (snapshot: QuerySnapshot<DocumentData>) => {
+      const loaded = snapshot.docs.map(
+        // ← annotate each doc as QueryDocumentSnapshot<DocumentData>
+        (doc: QueryDocumentSnapshot<DocumentData>) => {
+          const data = doc.data()
+          return {
+            id: doc.id,
+            content: data.content,
+            author: data.author,
+            createdAt: data.createdAt?.toDate() ?? new Date(),
+          }
         }
-      })
+      )
       setNotes(loaded)
-    })
-    return () => unsub()
-  }, [])
+    }
+  )
+  return () => unsub()
+}, [])
 
   // Save a new note
   async function handleSave(e: FormEvent) {
