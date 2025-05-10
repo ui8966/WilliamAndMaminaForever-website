@@ -1,50 +1,82 @@
 // src/pages/CalendarPage.tsx
+import { useState } from 'react'
+import Calendar from 'react-calendar'
+
+const emojiMap: Record<string, string> = {
+  '2025-05-17': '🎂',
+  '2025-06-9': '🎂',
+  '2025-08-7': '✈️',
+  '2025-07-9': '🇯🇵',
+  '2025-07-13': '🌸🏝️',
+  '2025-07-18': '🇰🇷',
+}
 
 export default function CalendarPage() {
-  // Today's year and month
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = today.getMonth() + 1
-  const monthLabel = `${year}年${String(month).padStart(2, '0')}月`
-
-  // Weekday labels in Japanese
-  const weekdays = ['日', '月', '火', '水', '木', '金', '土']
-
-  // Compute days in month and the starting weekday
-  const firstDayOfWeek = new Date(year, month - 1, 1).getDay()
-  const daysInMonth = new Date(year, month, 0).getDate()
-
-  // Build calendar cells: empty slots then day numbers
-  const cells: (number | null)[] = []
-  for (let i = 0; i < firstDayOfWeek; i++) cells.push(null)
-  for (let day = 1; day <= daysInMonth; day++) cells.push(day)
+  const [value, onChange] = useState(new Date())
 
   return (
     <div className="p-4">
-      {/* Month label */}
-      <h2 className="text-3xl font-heading text-center mb-4">{monthLabel}</h2>
+      <h2 className="text-3xl font-heading text-center mb-4">
+        {value.getFullYear()}年
+        {String(value.getMonth()+1).padStart(2,'0')}月
+      </h2>
 
-      {/* Weekday header */}
-      <div className="grid grid-cols-7 text-center text-sm mb-1">
-        {weekdays.map((wd) => (
-          <div key={wd} className="font-medium text-pink-600">
-            {wd}
-          </div>
-        ))}
-      </div>
+      <div className="mx-auto w-full max-w-7xl">
+        <Calendar
+          onChange={onChange}
+          value={value}
+          className="rounded-2xl shadow-lg overflow-hidden"
+          minDetail="month"
+          maxDetail="month"
+          prev2Label={null}
+          next2Label={null}
+          tileContent={({
+            date,
+            view,
+          }: {
+            date: Date
+            view: 'month'
+          }) => {
+            if (view === 'month') {
+              const key =
+              `${date.getFullYear()}-` +
+              `${(date.getMonth()+1).toString().padStart(2,'0')}-` +
+              `${date.getDate().toString().padStart(2,'0')}`
 
-      {/* Days grid */}
-      <div className="grid grid-cols-7 gap-1">
-        {cells.map((day, idx) => (
-          <div
-            key={idx}
-            className={`h-12 flex items-center justify-center rounded-lg cursor-pointer
-              ${day === today.getDate() ? 'bg-pink-200 font-bold' : ''}
-              ${day === null ? 'bg-transparent' : 'bg-white shadow-sm'}`}
-          >
-            {day ?? ''}
-          </div>
-        ))}
+              const emoji = emojiMap[key]
+              return emoji
+                ? <div className="text-center mt-1 text-xl">{emoji}</div>
+                : null
+            }
+          }}
+tileClassName={({
+   date,
+   view,
+ }: {
+   date: Date
+   view: 'month'
+ }) => {
+   // only apply a box on month view
+   if (view !== 'month') return ''
+
+   // base box styles
+   const base = [
+     'p-6',
+     'h-32',
+     'border', 'border-gray-200',
+     'rounded-lg',
+     'flex', 'items-center', 'justify-center',
+     'text-3xl',
+   ].join(' ')
+
+   // highlight today
+   if (date.toDateString() === new Date().toDateString()) {
+     return `${base} bg-pink-100 font-bold`
+   }
+
+   return base
+ }}
+        />
       </div>
     </div>
   )
