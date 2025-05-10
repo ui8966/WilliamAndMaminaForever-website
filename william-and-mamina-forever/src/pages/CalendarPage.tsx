@@ -8,6 +8,9 @@ const emojiMap: Record<string, string> = {
    '2025-06-09': '🎂',
    '2025-07-07': '✈️',
    '2025-07-09': '🇯🇵',
+   '2025-07-10': '🐙',
+   '2025-07-11': '🇯🇵',
+   '2025-07-12': '🐙',
    '2025-07-13': '🏝️',
    '2025-07-14': '🌸',
    '2025-07-15': '🌊',
@@ -62,7 +65,7 @@ export default function CalendarPage() {
 
               const emoji = emojiMap[key]
               return emoji
-                ? <div className="text-center mt-1 text-xl">{emoji}</div>
+                ? <div className="text-center mt-2 text-6xl">{emoji}</div>
                 : null
             }
           }}
@@ -84,7 +87,7 @@ tileClassName={({
      'border', 'border-gray-200',
      'rounded-lg',
      'flex','flex-col','items-center','justify-start',
-     'text-3xl',
+     'text-4xl',
    ].join(' ')
 
    // highlight today
