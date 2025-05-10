@@ -30,6 +30,15 @@ export default function CalendarPage() {
           maxDetail="month"
           prev2Label={null}
           next2Label={null}
+          /* make the prev/next buttons gigantic test */
+          prevLabel={<span className="text-4xl md:text-5xl px-2">‹</span>}
+          nextLabel={<span className="text-4xl md:text-5xl px-2">›</span>}
+          /* replace the month/year label with a big font too */
+          navigationLabel={({ label }: { label: string }) => (
+            <span className="text-3xl md:text-4xl font-heading">
+      {label}
+    </span>
+  )}
           tileContent={({
             date,
             view,
