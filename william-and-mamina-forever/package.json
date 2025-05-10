@@ -18,10 +18,10 @@
     "react-calendar": "^5.1.0",
     "react-day-picker": "^9.6.7",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.0",
-    "william-and-mamina-forever": "file:"
+    "react-router-dom": "^7.6.0"
   },
   "devDependencies": {
+    "firebase": "^11.7.1",
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.2",
     "@types/react-calendar": "^4.1.0",
