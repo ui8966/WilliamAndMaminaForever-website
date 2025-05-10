@@ -8,8 +8,15 @@ const emojiMap: Record<string, string> = {
    '2025-06-09': '🎁',
    '2025-07-07': '✈️',
    '2025-07-09': '🇯🇵',
-   '2025-07-13': '🌸🏝️',
+   '2025-07-13': '🏝️',
+   '2025-07-14': '🌸',
+   '2025-07-15': '🌊',
+   '2025-07-16': '🏖️',
+   '2025-07-17': '🏖️',
    '2025-07-18': '🇰🇷',
+   '2025-07-19': '🇰🇷',
+   '2025-07-20': '🇰🇷',
+   '2025-07-21': '🇰🇷',
  }
  
 export default function CalendarPage() {
@@ -76,7 +83,7 @@ tileClassName={({
      'md:h-67', 
      'border', 'border-gray-200',
      'rounded-lg',
-     'flex', 'items-center', 'justify-center',
+     'flex','flex-col','items-center','justify-start',
      'text-3xl',
    ].join(' ')
 
