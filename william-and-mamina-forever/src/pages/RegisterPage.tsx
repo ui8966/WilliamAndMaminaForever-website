@@ -7,6 +7,7 @@ export default function RegisterPage() {
   const { signup } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
+  const [firstName, setFirstName] = useState('')
   const [pw, setPw] = useState('')
   const [error, setError] = useState<string| null>(null)
   const [loading, setLoading] = useState(false)
@@ -16,7 +17,7 @@ export default function RegisterPage() {
     setError(null)
     setLoading(true)
     try {
-      await signup(email, pw)
+      await signup(email, pw, firstName)
       navigate('/')      // go home on success
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -40,6 +41,18 @@ export default function RegisterPage() {
         </h2>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
+
+        {/* First Name */}
+        <label className="block">
+          <span className="text-gray-700">First Name</span>
+          <input
+            type="text"
+            required
+            value={firstName}
+            onChange={e => setFirstName(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 p-2"
+          />
+        </label>
 
         <label className="block">
           <span className="text-gray-700">Email</span>

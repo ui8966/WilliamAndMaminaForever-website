@@ -8,6 +8,7 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
+  updateProfile,  
   type User,
 } from 'firebase/auth'
 import { auth } from '../lib/firebase'
@@ -16,7 +17,7 @@ import { auth } from '../lib/firebase'
 interface AuthContextType {
   user: User | null
   loading: boolean
-  signup: (email: string, pw: string) => Promise<void>
+  signup: (email: string, pw: string, firstName: string) => Promise<void>
   login: (email: string, pw: string) => Promise<void>
   logout: () => Promise<void>
 }
@@ -40,8 +41,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })()
   }, [])
 
-  const signup = (email: string, pw: string) =>
-    createUserWithEmailAndPassword(auth, email, pw).then(() => {})
+  const signup = async (email: string, pw: string, firstName: string) => {
+    const cred = await createUserWithEmailAndPassword(auth, email, pw)
+    // set the user's displayName immediately:
+    if (cred.user) {
+      await updateProfile(cred.user, { displayName: firstName })
+    }
+  }
   const login = (email: string, pw: string) =>
     signInWithEmailAndPassword(auth, email, pw).then(() => {})
   const logout = () => signOut(auth)

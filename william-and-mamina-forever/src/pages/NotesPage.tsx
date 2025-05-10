@@ -85,7 +85,7 @@ export default function NotesPage() {
       } else {
         await addDoc(collection(firestore, 'notes'), {
           content: newContent.trim(),
-          author: user.email,
+          author: user.displayName || user.email,
           createdAt: serverTimestamp(),
         })
       }
@@ -156,10 +156,11 @@ export default function NotesPage() {
 
       {/* + button */}
       <button
-        onClick={() => openModal()}
-        className="fixed bottom-20 right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition z-20"
+        onClick={() => setModalOpen(true)}
+        className="fixed right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
+        style={{ bottom: 'calc(env(safe-area-inset-bottom) + 8rem)' }}
       >
-        <Plus className="w-6 h-6" />
+        <Plus className="w-10 h-10" />
       </button>
 
       {/* Modal */}
