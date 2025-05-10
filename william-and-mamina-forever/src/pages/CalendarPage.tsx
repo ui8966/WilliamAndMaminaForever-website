@@ -6,7 +6,7 @@ const emojiMap: Record<string, string> = {
    '2025-04-04': '🇳🇴❤️',
    '2025-05-17': '🎂',
    '2025-06-09': '🎁',
-   '2025-08-07': '✈️',
+   '2025-07-07': '✈️',
    '2025-07-09': '🇯🇵',
    '2025-07-13': '🌸🏝️',
    '2025-07-18': '🇰🇷',
@@ -22,7 +22,7 @@ export default function CalendarPage() {
         {String(value.getMonth()+1).padStart(2,'0')}月
       </h2>
 
-      <div className="mx-auto w-full max-w-7xl">
+      <div className="mx-auto w-full max-w-7xl min-h-[80vh]">
         <Calendar
           onChange={onChange}
           value={value}
@@ -72,7 +72,8 @@ tileClassName={({
    // base box styles
    const base = [
      'p-6',
-     'h-32',
+     'h-64',
+     'md:h-67', 
      'border', 'border-gray-200',
      'rounded-lg',
      'flex', 'items-center', 'justify-center',
