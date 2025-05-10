@@ -1,38 +1,63 @@
 // src/pages/GalleryPage.tsx
-
-// 👇 adjust this to your actual file path:
 import bathRobeImg from '../assets/Momo/MomoBathRobe.jpg'
-import KimonoImg from '../assets/Momo/EE4F7F01-10C1-4027-B48A-908627DD9AC0.jpeg'
+import kimonoImg  from '../assets/Momo/EE4F7F01-10C1-4027-B48A-908627DD9AC0.jpeg'
+
+interface Photo {
+  src: string
+  alt: string
+  date: string   // YYYY-MM-DD
+  caption: string
+}
+
+const photos: Photo[] = [
+  {
+    src: bathRobeImg,
+    alt: 'Momo in bathrobe',
+    date: '2025-04-01',
+    caption: 'Momo in a bathrobe 🛁🐶',
+  },
+  {
+    src: kimonoImg,
+    alt: 'Momo in Kimono',
+    date: '2025-05-17',
+    caption: 'Momo in a Kimono ✨🐶',
+  },
+  // …later add cloud URLs here
+]
 
 export default function GalleryPage() {
   return (
-    <div className="flex flex-col items-center p-4 text-gray-700 space-y-4">
+    <div className="p-4 bg-pink-50 min-h-screen">
 
-      {/* Big centered local image */}
-      <div className="w-full max-w-md">
-        <img
-          src={bathRobeImg}
-          alt="Momo in bathrobe"
-          className="w-full h-auto rounded-2xl shadow-lg"
-        />
-        <p className="mt-2 text-center text-2xl text-gray-500">
-          “Momo in a bathrobe 🛁🐶” 📸
-        </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {photos.map(({ src, alt, date, caption }) => (
+          <figure
+            key={date + caption}
+            className="bg-white rounded-2xl shadow-lg overflow-hidden"
+          >
+            <figcaption className="px-6 pt-6 text-gray-600 text-lg md:text-4xl font-medium">
+              {new Date(date).toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </figcaption>
+
+            <img
+              src={src}
+              alt={alt}
+              className="w-full h-auto object-cover"
+            />
+
+            <p className="p-6 text-center text-xl md:text-4xl text-gray-800">
+              {caption}
+            </p>
+          </figure>
+        ))}
       </div>
 
-      <div className="w-full max-w-md">
-        <img
-          src={KimonoImg }
-          alt="Momo in Kimono"
-          className="w-full h-auto rounded-2xl shadow-lg"
-        />
-        <p className="mt-2 text-center text-2xl text-gray-500">
-          “Momo in a Kimono ✨🐶” 📸
-        </p>
-      </div>
-
-      <p className="text-3xl text-blue-600">
-        We can uppload photos here soon! 💌
+      <p className="mt-12 text-center text-xl text-blue-600">
+        Soon: Upload directly from your phone! 💌
       </p>
     </div>
   )
