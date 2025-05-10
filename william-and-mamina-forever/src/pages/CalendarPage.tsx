@@ -3,8 +3,9 @@ import { useState } from 'react'
 import Calendar from 'react-calendar'
 
 const emojiMap: Record<string, string> = {
+  '2025-04-4': '💞',
   '2025-05-17': '🎂',
-  '2025-06-9': '🎂',
+  '2025-06-9': '🎁',
   '2025-08-7': '✈️',
   '2025-07-9': '🇯🇵',
   '2025-07-13': '🌸🏝️',
@@ -31,11 +32,11 @@ export default function CalendarPage() {
           prev2Label={null}
           next2Label={null}
           /* make the prev/next buttons gigantic test */
-          prevLabel={<span className="text-4xl md:text-5xl px-2">‹</span>}
-          nextLabel={<span className="text-4xl md:text-5xl px-2">›</span>}
+          prevLabel={<span className="text-6xl md:text-7xl px-">‹</span>}
+          nextLabel={<span className="text-6xl md:text-7xl px-2">›</span>}
           /* replace the month/year label with a big font too */
           navigationLabel={({ label }: { label: string }) => (
-            <span className="text-3xl md:text-4xl font-heading">
+            <span className="text-5xl md:text-6xl font-heading">
       {label}
     </span>
   )}
