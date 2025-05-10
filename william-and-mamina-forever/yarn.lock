@@ -706,6 +706,11 @@
     "@typescript-eslint/types" "8.32.0"
     eslint-visitor-keys "^4.2.0"
 
+"@vercel/analytics@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@vercel/analytics/-/analytics-1.5.0.tgz#073f93694897414b21a8495e2619bbf64447dcaa"
+  integrity sha512-MYsBzfPki4gthY5HnYN7jgInhAZ7Ac1cYDoRWFomwGHWEX7odTEzbtg9kf/QSo7XEsEAqlQugA6gJ2WS2DEa3g==
+
 "@vitejs/plugin-react@^4.4.1":
   version "4.4.1"
   resolved "https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-4.4.1.tgz"
@@ -2230,7 +2235,7 @@ which@^2.0.1:
     react-day-picker "^9.6.7"
     react-dom "^19.1.0"
     react-router-dom "^7.6.0"
-    william-and-mamina-forever "file:../../../AppData/Local/Yarn/Cache/v6/npm-william-and-mamina-forever-0.0.0-0a28cc2c-5303-46f1-b2cc-ef7bb8cc6eb1-1746882954060/node_modules/william-and-mamina-forever"
+    william-and-mamina-forever "file:../../../AppData/Local/Yarn/Cache/v6/npm-william-and-mamina-forever-0.0.0-8a8a8ea5-cd43-451c-9792-597b4550b612-1746887804636/node_modules/william-and-mamina-forever"
 
 word-wrap@^1.2.5:
   version "1.2.5"
