@@ -3,11 +3,15 @@ import type { ReactNode } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
-interface Props { children: ReactNode }
+export default function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { user, loading } = useAuth()
 
-export default function ProtectedRoute({ children }: Props) {
-  const { user } = useAuth()
-  // if no user, send them to /login
+  // while we’re waiting for Firebase → just render nothing (or a spinner)
+  if (loading) return null
+
+  // once loading is false, if no user → kick to /login
   if (!user) return <Navigate to="/login" replace />
+
+  // otherwise we have a user, render the children
   return <>{children}</>
 }

@@ -1,42 +1,53 @@
 // src/contexts/AuthContext.tsx
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from 'react'
-import type { User } from 'firebase/auth'
-
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  onAuthStateChanged, 
-  signOut 
+import {
+  setPersistence,
+  browserLocalPersistence,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  type User,
 } from 'firebase/auth'
 import { auth } from '../lib/firebase'
 
+
 interface AuthContextType {
-  user: null | import('firebase/auth').User
+  user: User | null
+  loading: boolean
   signup: (email: string, pw: string) => Promise<void>
-  login:  (email: string, pw: string) => Promise<void>
+  login: (email: string, pw: string) => Promise<void>
   logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>(null!)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthContextType['user']>(null)
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => 
-    onAuthStateChanged(auth, (u: User | null) => setUser(u)), 
-  [])
+  useEffect(() => {
+    (async () => {
+      // persist to localStorage
+      await setPersistence(auth, browserLocalPersistence)
+      // subscribe
+      const unsubscribe = onAuthStateChanged(auth, (u) => {
+        setUser(u)
+        setLoading(false)    // now we know who we are
+      })
+      return unsubscribe
+    })()
+  }, [])
 
-  const signup = (email: string, pw: string) => 
+  const signup = (email: string, pw: string) =>
     createUserWithEmailAndPassword(auth, email, pw).then(() => {})
-
-  const login  = (email: string, pw: string) => 
+  const login = (email: string, pw: string) =>
     signInWithEmailAndPassword(auth, email, pw).then(() => {})
-
   const logout = () => signOut(auth)
 
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

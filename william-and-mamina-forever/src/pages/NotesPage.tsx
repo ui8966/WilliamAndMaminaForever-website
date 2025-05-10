@@ -80,10 +80,12 @@ export default function NotesPage() {
     <div className="p-4 bg-pink-50 min-h-screen">
 
       <div className="space-y-4">
-        {notes.map(note => (
-          <div
+        {notes.map((note, i) => (
+                    <div
             key={note.id}
-            className="bg-white rounded-2xl shadow-md p-4"
+            className={`bg-white rounded-2xl shadow-md p-4 ${
+              i === 0 ? 'sticky top-0 z-10' : ''
+            }`}
           >
             <div className="flex justify-between items-center">
               <span className="font-medium text-gray-800">{note.author}</span>
@@ -101,7 +103,8 @@ export default function NotesPage() {
       {/* + button */}
       <button
         onClick={() => setModalOpen(true)}
-        className="fixed bottom-20 right-7 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
+        className="fixed right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
+        style={{ bottom: 'calc(env(safe-area-inset-bottom) + 8rem)' }}
       >
         <Plus className="w-6 h-6" />
       </button>
