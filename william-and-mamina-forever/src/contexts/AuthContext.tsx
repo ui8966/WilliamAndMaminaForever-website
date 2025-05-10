@@ -1,6 +1,8 @@
 // src/contexts/AuthContext.tsx
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from 'react'
+import type { User } from 'firebase/auth'
+
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -22,7 +24,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthContextType['user']>(null)
 
   useEffect(() => 
-    onAuthStateChanged(auth, u => setUser(u)), 
+    onAuthStateChanged(auth, (u: User | null) => setUser(u)), 
   [])
 
   const signup = (email: string, pw: string) => 
