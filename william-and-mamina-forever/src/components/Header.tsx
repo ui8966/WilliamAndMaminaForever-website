@@ -1,7 +1,6 @@
 // src/components/Header.tsx
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User } from 'lucide-react';
-//import { ArrowLeft, Menu, User } from 'lucide-react';
+import { ArrowLeft, Menu, User } from 'lucide-react';
 
 const titles: Record<string, string> = {
   '/': 'Home',
@@ -31,8 +30,7 @@ export default function Header() {
         onClick={() => (isHome ? null : navigate(-1))}
         className="p-5"
       >
-        {/*{isHome ? <Menu /> : <ArrowLeft />}*/}
-        {isHome ? null : <ArrowLeft />}
+        {isHome ? <Menu /> : <ArrowLeft />}
 
       </button>
       <h1 className="text-7xl font-heading">{titles[pathname] || ''}</h1>
