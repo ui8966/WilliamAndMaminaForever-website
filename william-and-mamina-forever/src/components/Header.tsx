@@ -8,7 +8,7 @@ const titles: Record<string, string> = {
   '/notes': 'Notes',
   '/gallery': 'Gallery',
   '/map': 'Map',
-  '/settings': 'Settings',
+  '/calendar': 'Calendar',
 };
 
 export default function Header() {

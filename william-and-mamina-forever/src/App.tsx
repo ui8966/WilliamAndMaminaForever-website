@@ -5,7 +5,7 @@ import HomePage from './pages/HomePage'
 import MessagesPage from './pages/MessagesPage'
 import GalleryPage from './pages/GalleryPage'
 import MapPage from './pages/MapPage'
-import SettingsPage from './pages/SettingsPage'
+import CalendarPage from './pages/CalendarPage'
 
 
 export default function App() {
@@ -17,7 +17,7 @@ export default function App() {
           <Route path="notes" element={<MessagesPage />} />
           <Route path="gallery" element={<GalleryPage />} />
           <Route path="map" element={<MapPage />} />
-          <Route path="settings" element={<SettingsPage />} />
+          <Route path="calendar" element={<CalendarPage />} />
         </Route>
       </Routes>
     </Router>

@@ -5,7 +5,7 @@ import {
   MessageSquare,
   Camera,
   MapPin,
-  Settings,
+  Calendar,
 } from 'lucide-react';
 
 const items = [
@@ -13,7 +13,7 @@ const items = [
   { to: '/notes', icon: MessageSquare, label: 'Notes' },
   { to: '/gallery', icon: Camera, label: 'Gallery' },
   { to: '/map', icon: MapPin, label: 'Map' },
-  { to: '/settings', icon: Settings, label: 'Settings' },
+  { to: '/calendar', icon: Calendar, label: 'Calendar' },
 ];
 
 export default function BottomNav() {
