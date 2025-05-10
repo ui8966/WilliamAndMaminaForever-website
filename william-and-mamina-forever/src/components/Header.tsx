@@ -23,20 +23,20 @@ export default function Header() {
      pt-[env(safe-area-inset-top)]
      bg-white bg-opacity-90 backdrop-blur-md
      flex items-center justify-between
-     px-8 h-24                  
+     px-6 h-28                  
      shadow-md
    "
  >
          <button
         onClick={() => (isHome ? null : navigate(-1))}
-        className="p-4"
+        className="p-5"
       >
         {/*{isHome ? <Menu /> : <ArrowLeft />}*/}
         {isHome ? null : <ArrowLeft />}
 
       </button>
-      <h1 className="text-xl font-heading">{titles[pathname] || ''}</h1>
-      <User className="w-12 h-12 text-pink-600 cursor-pointer" />
+      <h1 className="text-7xl font-heading">{titles[pathname] || ''}</h1>
+      <User className="w-14 h-14 text-pink-600 cursor-pointer" />
     </header>
   );
 }

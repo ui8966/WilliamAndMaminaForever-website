@@ -4,6 +4,7 @@ import CountdownTimer from '../components/CountdownTimer'
 import FloatingHearts from '../components/FloatingHearts'
 import TimerWithHoverHeart from '../components/TimerWithHoverHeart'
 import PetalBackground  from '../components/PetalBackground'
+import LocalClocks from '../components/LocalClocks'
 
 export default function HomePage() {
   return (
@@ -15,17 +16,19 @@ export default function HomePage() {
         💖 William & Mamina Forever 💖
       </h1>
 
-      <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-md space-y-4">
-        <p className="text-2xl md:text-3xl font-body">We’ve been together for:</p>
+      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-2xl space-y-6">
+        <p className="text-2xl md:text-4xl font-body">We’ve been together for:</p>
         <TimerWithHoverHeart>
           <TogetherTimer />
         </TimerWithHoverHeart>
 
-        <p className="text-2xl md:text-3xl font-body">Countdown until we meet:</p>
+        <p className="text-2xl md:text-4xl font-body">Until we meet again:</p>
         <TimerWithHoverHeart>
           <CountdownTimer />
         </TimerWithHoverHeart>
       </div>
+
+      <LocalClocks />
     </div>
   )
 }

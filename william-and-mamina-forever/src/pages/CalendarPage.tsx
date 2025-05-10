@@ -27,10 +27,6 @@ export default function CalendarPage() {
 
   return (
     <div className="p-4">
-      <h2 className="text-3xl font-heading text-center mb-4">
-        {value.getFullYear()}年
-        {String(value.getMonth()+1).padStart(2,'0')}月
-      </h2>
 
       <div className="mx-auto w-full max-w-7xl min-h-[80vh]">
         <Calendar
@@ -65,7 +61,7 @@ export default function CalendarPage() {
 
               const emoji = emojiMap[key]
               return emoji
-                ? <div className="text-center mt-2 text-6xl">{emoji}</div>
+                ? <div className="text-center mt-3 text-6xl">{emoji}</div>
                 : null
             }
           }}
