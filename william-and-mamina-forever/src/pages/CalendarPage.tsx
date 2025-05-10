@@ -1,17 +1,17 @@
 // src/pages/CalendarPage.tsx
 import { useState } from 'react'
-import Calendar from 'react-calendar'
+import Calendar from 'react-calendar' 
 
 const emojiMap: Record<string, string> = {
-  '2025-04-4': '💞',
-  '2025-05-17': '🎂',
-  '2025-06-9': '🎁',
-  '2025-08-7': '✈️',
-  '2025-07-9': '🇯🇵',
-  '2025-07-13': '🌸🏝️',
-  '2025-07-18': '🇰🇷',
-}
-
+   '2025-04-04': '🇳🇴❤️',
+   '2025-05-17': '🎂',
+   '2025-06-09': '🎁',
+   '2025-08-07': '✈️',
+   '2025-07-09': '🇯🇵',
+   '2025-07-13': '🌸🏝️',
+   '2025-07-18': '🇰🇷',
+ }
+ 
 export default function CalendarPage() {
   const [value, onChange] = useState(new Date())
 
