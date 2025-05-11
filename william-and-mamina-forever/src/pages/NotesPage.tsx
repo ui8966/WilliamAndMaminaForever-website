@@ -1,9 +1,8 @@
-// src/pages/NotesPage.tsx
 import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { firestore } from '../lib/firebase'
-import { User } from 'lucide-react'
+import { User as UserIcon } from 'lucide-react'
 import type { QuerySnapshot, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore'
 import {
   collection,
@@ -22,6 +21,7 @@ interface Note {
   id: string
   content: string
   author: string
+  authorPhoto?: string
   createdAt: Date
 }
 
@@ -29,11 +29,14 @@ export default function NotesPage() {
   const { user } = useAuth()
   const [notes, setNotes] = useState<Note[]>([])
 
-  // modal state
+  // Note editor modal state
   const [modalOpen, setModalOpen] = useState(false)
   const [newContent, setNewContent] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+
+  // Photo preview modal state
+  const [photoModalSrc, setPhotoModalSrc] = useState<string | null>(null)
 
   // Subscribe to notes collection
   useEffect(() => {
@@ -51,6 +54,7 @@ export default function NotesPage() {
               id: d.id,
               content: data.content,
               author: data.author,
+              authorPhoto: data.authorPhoto ?? null,
               createdAt: data.createdAt?.toDate() ?? new Date(),
             }
           }
@@ -61,8 +65,8 @@ export default function NotesPage() {
     return () => unsub()
   }, [])
 
-  // Open modal for new note or editing
-  function openModal(note?: Note) {
+  // Open editor modal
+  function openEditor(note?: Note) {
     if (note) {
       setEditingId(note.id)
       setNewContent(note.content)
@@ -73,19 +77,22 @@ export default function NotesPage() {
     setModalOpen(true)
   }
 
-  // Save or update
+  // Save or update note
   async function handleSave(e: FormEvent) {
     e.preventDefault()
     if (!newContent.trim() || !user) return
     setSaving(true)
     try {
       if (editingId) {
-        const ref = doc(firestore, 'notes', editingId)
-        await updateDoc(ref, { content: newContent.trim() })
+        await updateDoc(doc(firestore, 'notes', editingId), {
+          content: newContent.trim(),
+          authorPhoto: user.photoURL || null,
+        })
       } else {
         await addDoc(collection(firestore, 'notes'), {
           content: newContent.trim(),
-          author: user.displayName || user.email,
+          author:  user.displayName || user.email!,
+          authorPhoto: user.photoURL || null,
           createdAt: serverTimestamp(),
         })
       }
@@ -99,7 +106,7 @@ export default function NotesPage() {
     }
   }
 
-  // Delete with confirmation
+  // Delete note
   async function handleDelete(id: string) {
     if (!window.confirm('Are you sure you want to delete this note? This cannot be undone.')) {
       return
@@ -113,21 +120,31 @@ export default function NotesPage() {
         {notes.map((note, i) => (
           <div
             key={note.id}
-            className={`bg-white rounded-2xl shadow-md p-4 ${
-              i === 0 ? 'sticky top-4 z-10 mb-4' : ''
-            }`}
+            className={`bg-white rounded-2xl shadow-md p-4 ${i === 0 ? 'sticky top-4 z-10 mb-4' : ''}`}
           >
             {/* Header */}
             <div className="flex justify-between items-center">
-              {/* Author */}
+              {/* Author avatar & name */}
               <div className="flex items-center space-x-2">
-                <User className="w-11 h-11 text-pink-600" />
-                <span className="font-medium text-gray-800 text-lg md:text-xl">{note.author}</span>
+                {note.authorPhoto ? (
+                  <img
+                    src={note.authorPhoto}
+                    alt={note.author}
+                    className="w-11 h-11 rounded-full object-cover border cursor-pointer"
+                    onClick={() => setPhotoModalSrc(note.authorPhoto!)}
+                  />
+                ) : (
+                  <UserIcon className="w-11 h-11 text-pink-600" />
+                )}
+                <span className="font-medium text-gray-800 text-lg md:text-xl">
+                  {note.author}
+                </span>
               </div>
-              {/* Actions */}
+
+              {/* Edit/Delete */}
               <div className="flex space-x-2">
                 <button
-                  onClick={() => openModal(note)}
+                  onClick={() => openEditor(note)}
                   className="p-3 text-gray-500 hover:text-pink-600"
                   title="Edit note"
                 >
@@ -142,11 +159,13 @@ export default function NotesPage() {
                 </button>
               </div>
             </div>
+
             {/* Content */}
             <p className="mt-4 text-lg md:text-2xl text-gray-700 whitespace-pre-wrap">
               {note.content}
             </p>
-            {/* Footer with date */}
+
+            {/* Footer date */}
             <div className="mt-4 text-md text-gray-500">
               {note.createdAt.toLocaleString()}
             </div>
@@ -154,16 +173,16 @@ export default function NotesPage() {
         ))}
       </div>
 
-      {/* + button */}
+      {/* + New Note button */}
       <button
-        onClick={() => setModalOpen(true)}
+        onClick={() => openEditor()}
         className="fixed right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
         style={{ bottom: 'calc(env(safe-area-inset-bottom) + 8rem)' }}
       >
         <Plus className="w-16 h-16" />
       </button>
 
-      {/* Modal */}
+      {/* Note Editor Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50">
           <form
@@ -185,18 +204,28 @@ export default function NotesPage() {
                 type="button"
                 className="px-4 py-2 rounded-md"
                 onClick={() => setModalOpen(false)}
-              >
-                Cancel
-              </button>
+              >Cancel</button>
               <button
                 type="submit"
                 disabled={saving}
                 className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition"
-              >
-                {saving ? 'Saving…' : editingId ? 'Save Changes' : 'Save'}
-              </button>
+              >{saving ? 'Saving…' : editingId ? 'Save Changes' : 'Save'}</button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* Photo Preview Modal */}
+      {photoModalSrc && (
+        <div
+          className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-75 p-4"
+          onClick={() => setPhotoModalSrc(null)}
+        >
+          <img
+            src={photoModalSrc}
+            alt="Author"
+            className="max-w-md max-h-[80vh] rounded-lg shadow-lg"
+          />
         </div>
       )}
     </div>

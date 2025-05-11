@@ -1,7 +1,7 @@
 // src/components/Header.tsx
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Menu as MenuIcon, User } from 'lucide-react'
+import { ArrowLeft, Menu as MenuIcon, User as UserIcon } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
 const titles: Record<string, string> = {
@@ -15,7 +15,7 @@ const titles: Record<string, string> = {
 export default function Header() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
   const isHome = pathname === '/'
 
@@ -28,9 +28,12 @@ export default function Header() {
     }
   }
 
-  return (
+return (
     <>
-      <header className="fixed top-0 inset-x-0 z-50 pt-[env(safe-area-inset-top)] bg-white bg-opacity-90 backdrop-blur-md flex items-center justify-between px-6 h-28 shadow-md">
+      <header className="fixed top-0 inset-x-0 z-50 pt-[env(safe-area-inset-top)]
+        bg-white bg-opacity-90 backdrop-blur-md flex items-center justify-between
+        px-6 h-28 shadow-md"
+      >
         <button
           onClick={() => isHome ? setMenuOpen(true) : navigate(-1)}
           className="p-4"
@@ -45,7 +48,18 @@ export default function Header() {
           {titles[pathname] || ''}
         </h1>
 
-        <User className="w-14 h-14 text-pink-600 cursor-pointer" />
+        <button onClick={() => navigate('/profile')} className="p-2">
+          {user?.photoURL
+            // show their avatar if they have one
+            ? <img
+                src={user.photoURL}
+                alt="Your avatar"
+                className="w-14 h-14 rounded-full object-cover border-2 border-pink-300"
+              />
+            // otherwise, generic icon
+            : <UserIcon className="w-14 h-14 text-pink-600" />
+          }
+        </button>
       </header>
 
       {/* Side menu overlay */}

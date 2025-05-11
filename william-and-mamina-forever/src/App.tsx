@@ -9,6 +9,7 @@ import MapPage      from './pages/MapPage'
 import CalendarPage from './pages/CalendarPage'
 import LoginPage    from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import ProfilePage from './pages/ProfilePage'
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="gallery"  element={<GalleryPage />} />
           <Route path="map"      element={<MapPage />} />
           <Route path="calendar" element={<CalendarPage />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
       </Routes>
     </Router>
