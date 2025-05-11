@@ -179,7 +179,7 @@ return (
         className="fixed right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
         style={{ bottom: 'calc(env(safe-area-inset-bottom) + 9rem)' }}
       >
-        <Plus className="w-18 h-18" />
+        <Plus className="w-20 h-20" />
       </button>
 
       {/* Note Editor Modal */}
