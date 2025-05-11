@@ -130,13 +130,13 @@ return (
                   <img
                     src={note.authorPhoto}
                     alt={note.author}
-                    className="w-14 h-14 rounded-full object-cover border-2 cursor-pointer"
+                    className="w-20 h-20 rounded-full object-cover border-2 cursor-pointer"
                     onClick={() => setPhotoModalSrc(note.authorPhoto!)}
                   />
                 ) : (
-                  <UserIcon className="w-14 h-14 text-pink-600" />
+                  <UserIcon className="w-20 h-20 text-pink-600" />
                 )}
-                <span className="font-semibold text-gray-800 text-2xl md:text-3xl">
+                <span className="font-semibold text-gray-800 text-2xl md:text-4xl">
                   {note.author}
                 </span>
               </div>
@@ -161,12 +161,12 @@ return (
             </div>
 
             {/* Content */}
-            <p className="mt-6 text-xl md:text-3xl text-gray-700 whitespace-pre-wrap">
+            <p className="mt-6 text-xl md:text-4xl text-gray-700 whitespace-pre-wrap">
               {note.content}
             </p>
 
             {/* Footer date */}
-            <div className="mt-6 text-lg md:text-xl text-gray-500">
+            <div className="mt-6 text-lg md:text-2xl text-gray-500">
               {note.createdAt.toLocaleString()}
             </div>
           </div>
