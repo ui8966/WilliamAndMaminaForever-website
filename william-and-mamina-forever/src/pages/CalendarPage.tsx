@@ -130,7 +130,9 @@ export default function CalendarPage() {
             className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4"
           >
             <h3 className="text-2xl font-heading text-center">
-              {new Date(modalDate).toLocaleDateString()}
+              {new Date(
+                  new Date(modalDate).getTime() + 24 * 60 * 60 * 1000
+                ).toLocaleDateString()}
             </h3>
 
             <label className="block">
