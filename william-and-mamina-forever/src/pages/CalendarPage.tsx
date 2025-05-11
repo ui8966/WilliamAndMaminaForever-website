@@ -1,100 +1,182 @@
 // src/pages/CalendarPage.tsx
-import { useState } from 'react'
-import Calendar from 'react-calendar' 
+import { useState, useEffect } from 'react'
+import Calendar from 'react-calendar'
+import {
+  collection,
+  onSnapshot,
+  setDoc,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+  type DocumentData,
+  type QueryDocumentSnapshot,
+  type QuerySnapshot,
+} from 'firebase/firestore'
+import { firestore } from '../lib/firebase'
 
-const emojiMap: Record<string, string> = {
-   '2025-04-04': '🇳🇴❤️',
-   '2025-05-17': '🎂',
-   '2025-06-09': '🎂',
-   '2025-07-07': '✈️',
-   '2025-07-09': '🇯🇵',
-   '2025-07-10': '🐙',
-   '2025-07-11': '🇯🇵',
-   '2025-07-12': '🐙',
-   '2025-07-13': '🏝️',
-   '2025-07-14': '🌸',
-   '2025-07-15': '🌊',
-   '2025-07-16': '🏖️',
-   '2025-07-17': '🏖️',
-   '2025-07-18': '🇰🇷',
-   '2025-07-19': '🇰🇷',
-   '2025-07-20': '🇰🇷',
-   '2025-07-21': '🇰🇷',
- }
- 
+interface Event {
+  date: string
+  emojis: string[]
+  notes?: string
+}
+
 export default function CalendarPage() {
   const [value, onChange] = useState(new Date())
+  const [events, setEvents] = useState<Record<string, Event>>({})
+  const [modalDate, setModalDate] = useState<string | null>(null)
+  const [form, setForm] = useState({ emojis: '', notes: '' })
+
+  // 1️⃣ Subscribe to all events in Firestore
+  useEffect(() => {
+    const col = collection(firestore, 'events')
+    const unsub = onSnapshot(
+      col,
+      (snap: QuerySnapshot<DocumentData>) => {
+        const evts: Record<string, Event> = {}
+        snap.docs.forEach((d: QueryDocumentSnapshot<DocumentData>) => {
+          const data = d.data() as Event
+          evts[data.date] = data
+        })
+        setEvents(evts)
+      }
+    )
+    return () => unsub()
+  }, [])
+
+  // 2️⃣ Open modal when a day is clicked
+  function handleDayClick(date: Date) {
+    const key = date.toISOString().slice(0, 10)
+    const ev = events[key]
+    setForm({ emojis: ev?.emojis.join('') || '', notes: ev?.notes || '' })
+    setModalDate(key)
+  }
+
+  // 3️⃣ Save or delete the event
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault()
+    if (!modalDate) return
+
+    const emojis = Array.from(form.emojis)
+    const ref = doc(firestore, 'events', modalDate)
+
+    if (emojis.length === 0 && !form.notes) {
+      // nothing left → delete
+      await deleteDoc(ref)
+    } else {
+      // upsert
+      await setDoc(ref, {
+        date: modalDate,
+        emojis,
+        notes: form.notes,
+        updatedAt: serverTimestamp(),
+      })
+    }
+    setModalDate(null)
+  }
 
   return (
     <div className="p-4">
-
       <div className="mx-auto w-full max-w-7xl min-h-[80vh]">
         <Calendar
           onChange={onChange}
           value={value}
+          onClickDay={handleDayClick}
           className="rounded-2xl shadow-lg overflow-hidden"
           minDetail="month"
           maxDetail="month"
           prev2Label={null}
           next2Label={null}
-          /* make the prev/next buttons gigantic test */
-          prevLabel={<span className="text-6xl md:text-7xl px-">‹</span>}
-          nextLabel={<span className="text-6xl md:text-7xl px-2">›</span>}
-          /* replace the month/year label with a big font too */
+          prevLabel={<span className="text-6xl md:text-7xl">‹</span>}
+          nextLabel={<span className="text-6xl md:text-7xl">›</span>}
           navigationLabel={({ label }: { label: string }) => (
-            <span className="text-5xl md:text-6xl font-heading">
-      {label}
-    </span>
-  )}
-          tileContent={({
-            date,
-            view,
-          }: {
-            date: Date
-            view: 'month'
-          }) => {
-            if (view === 'month') {
-              const key =
-              `${date.getFullYear()}-` +
-              `${(date.getMonth()+1).toString().padStart(2,'0')}-` +
-              `${date.getDate().toString().padStart(2,'0')}`
-
-              const emoji = emojiMap[key]
-              return emoji
-                ? <div className="text-center mt-3 text-6xl">{emoji}</div>
-                : null
-            }
+            <span className="text-5xl md:text-6xl font-heading">{label}</span>
+          )}
+          tileContent={({ date, view }: { date: Date; view: string }) => {
+            if (view !== 'month') return null
+            const key = date.toISOString().slice(0, 10)
+            const ev = events[key]
+            return ev?.emojis.length ? (
+              <div className="text-center mt-3 text-6xl">
+                {ev.emojis.join('')}
+              </div>
+            ) : null
           }}
-tileClassName={({
-   date,
-   view,
- }: {
-   date: Date
-   view: 'month'
- }) => {
-   // only apply a box on month view
-   if (view !== 'month') return ''
-
-   // base box styles
-   const base = [
-     'p-6',
-     'h-64',
-     'md:h-67', 
-     'border', 'border-gray-200',
-     'rounded-lg',
-     'flex','flex-col','items-center','justify-start',
-     'text-4xl',
-   ].join(' ')
-
-   // highlight today
-   if (date.toDateString() === new Date().toDateString()) {
-     return `${base} bg-pink-100 font-bold`
-   }
-
-   return base
- }}
+          tileClassName={({ date, view }: { date: Date; view: string }) => {
+            if (view !== 'month') return ''
+            const base = [
+              'p-6',
+              'h-64',
+              'border',
+              'border-gray-200',
+              'rounded-lg',
+              'flex',
+              'flex-col',
+              'items-center',
+              'justify-start',
+              'text-4xl',
+            ].join(' ')
+            return date.toDateString() === new Date().toDateString()
+              ? `${base} bg-pink-100 font-bold`
+              : base
+          }}
         />
       </div>
+
+      {/* 4️⃣ Day-click modal */}
+      {modalDate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <form
+            onSubmit={handleSave}
+            className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4"
+          >
+            <h3 className="text-2xl font-heading text-center">
+              {new Date(modalDate).toLocaleDateString()}
+            </h3>
+
+            <label className="block">
+              <span className="block mb-1">Emojis:</span>
+              <input
+                type="text"
+                value={form.emojis}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, emojis: e.target.value }))
+                }
+                className="w-full border border-gray-300 rounded p-2 text-2xl text-center"
+                placeholder="Pick emojis…"
+              />
+            </label>
+
+            <label className="block">
+              <span className="block mb-1">Notes:</span>
+              <textarea
+                value={form.notes}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, notes: e.target.value }))
+                }
+                rows={3}
+                className="w-full border border-gray-300 rounded p-2"
+                placeholder="Optional details…"
+              />
+            </label>
+
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={() => setModalDate(null)}
+                className="px-4 py-2 rounded border"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-pink-600 text-white rounded"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   )
 }

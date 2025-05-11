@@ -128,17 +128,17 @@ export default function NotesPage() {
               <div className="flex space-x-2">
                 <button
                   onClick={() => openModal(note)}
-                  className="p-2 text-gray-500 hover:text-pink-600 text-xl"
+                  className="p-3 text-gray-500 hover:text-pink-600"
                   title="Edit note"
                 >
-                  <Edit2 className="w-8 h-8" />
+                  <Edit2 className="w-10 h-10" />
                 </button>
                 <button
                   onClick={() => handleDelete(note.id)}
-                  className="text-gray-500 hover:text-red-600 text-xl"
+                  className="p-3 text-gray-500 hover:text-red-600"
                   title="Delete note"
                 >
-                  <Trash2 className="w-8 h-8" />
+                  <Trash2 className="w-10 h-10" />
                 </button>
               </div>
             </div>
@@ -160,7 +160,7 @@ export default function NotesPage() {
         className="fixed right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
         style={{ bottom: 'calc(env(safe-area-inset-bottom) + 8rem)' }}
       >
-        <Plus className="w-10 h-10" />
+        <Plus className="w-16 h-16" />
       </button>
 
       {/* Modal */}
