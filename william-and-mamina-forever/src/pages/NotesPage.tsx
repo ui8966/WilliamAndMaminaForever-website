@@ -189,7 +189,7 @@ return (
             onSubmit={handleSave}
             className="bg-white p-9 rounded-2xl shadow-lg w-full max-w-7xl space-y-10"
           >
-            <h3 className="text-5xl font-heading text-pink-600 text-center">
+            <h3 className="text-6xl font-heading text-pink-600 text-center">
               {editingId ? 'Edit Note' : 'New Note'}
             </h3>
             <textarea

@@ -129,7 +129,7 @@ export default function CalendarPage() {
             onSubmit={handleSave}
             className="bg-white rounded-2xl p-9 w-full max-w-4xl space-y-10"
           >
-            <h3 className="text-5xl font-heading text-center">
+            <h3 className="text-6xl font-heading text-center">
               {new Date(
                   new Date(modalDate).getTime() + 24 * 60 * 60 * 1000
                 ).toLocaleDateString()}
