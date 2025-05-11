@@ -54,7 +54,7 @@ return (
             ? <img
                 src={user.photoURL}
                 alt="Your avatar"
-                className="w-14 h-14 rounded-full object-cover border-2 border-pink-300"
+                className="w-20 h-20 rounded-full object-cover border-2 border-pink-300"
               />
             // otherwise, generic icon
             : <UserIcon className="w-14 h-14 text-pink-600" />

@@ -114,59 +114,59 @@ export default function NotesPage() {
     await deleteDoc(doc(firestore, 'notes', id))
   }
 
-  return (
+return (
     <div className="p-4 bg-pink-50 min-h-screen">
-      <div className="space-y-4">
+      <div className="space-y-6">  {/* more breathing room */}
         {notes.map((note, i) => (
           <div
             key={note.id}
-            className={`bg-white rounded-2xl shadow-md p-4 ${i === 0 ? 'sticky top-4 z-10 mb-4' : ''}`}
+            className={`bg-white rounded-2xl shadow-md p-6 ${i === 0 ? 'sticky top-6 z-10 mb-6' : ''}`}
           >
             {/* Header */}
             <div className="flex justify-between items-center">
               {/* Author avatar & name */}
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-4">
                 {note.authorPhoto ? (
                   <img
                     src={note.authorPhoto}
                     alt={note.author}
-                    className="w-11 h-11 rounded-full object-cover border cursor-pointer"
+                    className="w-14 h-14 rounded-full object-cover border-2 cursor-pointer"
                     onClick={() => setPhotoModalSrc(note.authorPhoto!)}
                   />
                 ) : (
-                  <UserIcon className="w-11 h-11 text-pink-600" />
+                  <UserIcon className="w-14 h-14 text-pink-600" />
                 )}
-                <span className="font-medium text-gray-800 text-lg md:text-xl">
+                <span className="font-semibold text-gray-800 text-2xl md:text-3xl">
                   {note.author}
                 </span>
               </div>
 
               {/* Edit/Delete */}
-              <div className="flex space-x-2">
+              <div className="flex space-x-4">
                 <button
                   onClick={() => openEditor(note)}
                   className="p-3 text-gray-500 hover:text-pink-600"
                   title="Edit note"
                 >
-                  <Edit2 className="w-10 h-10" />
+                  <Edit2 className="w-12 h-12" />
                 </button>
                 <button
                   onClick={() => handleDelete(note.id)}
                   className="p-3 text-gray-500 hover:text-red-600"
                   title="Delete note"
                 >
-                  <Trash2 className="w-10 h-10" />
+                  <Trash2 className="w-12 h-12" />
                 </button>
               </div>
             </div>
 
             {/* Content */}
-            <p className="mt-4 text-lg md:text-2xl text-gray-700 whitespace-pre-wrap">
+            <p className="mt-6 text-xl md:text-3xl text-gray-700 whitespace-pre-wrap">
               {note.content}
             </p>
 
             {/* Footer date */}
-            <div className="mt-4 text-md text-gray-500">
+            <div className="mt-6 text-lg md:text-xl text-gray-500">
               {note.createdAt.toLocaleString()}
             </div>
           </div>
@@ -177,9 +177,9 @@ export default function NotesPage() {
       <button
         onClick={() => openEditor()}
         className="fixed right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
-        style={{ bottom: 'calc(env(safe-area-inset-bottom) + 8rem)' }}
+        style={{ bottom: 'calc(env(safe-area-inset-bottom) + 9rem)' }}
       >
-        <Plus className="w-16 h-16" />
+        <Plus className="w-18 h-18" />
       </button>
 
       {/* Note Editor Modal */}
