@@ -184,31 +184,31 @@ return (
 
       {/* Note Editor Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50 p-6">
           <form
             onSubmit={handleSave}
-            className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md space-y-4"
+            className="bg-white p-9 rounded-2xl shadow-lg w-full max-w-7xl space-y-10"
           >
-            <h3 className="text-2xl font-heading text-pink-600 text-center">
+            <h3 className="text-5xl font-heading text-pink-600 text-center">
               {editingId ? 'Edit Note' : 'New Note'}
             </h3>
             <textarea
               value={newContent}
               onChange={e => setNewContent(e.target.value)}
-              rows={5}
-              className="w-full border border-gray-300 rounded-md p-2"
+              rows={10}
+              className="w-full border border-gray-300 rounded-md p-5 text-5xl"
               placeholder="Write your note here..."
             />
-            <div className="flex justify-end space-x-2">
+            <div className="flex justify-between">
               <button
                 type="button"
-                className="px-4 py-2 rounded-md"
+                className="px-10 py-3 text-2xl rounded-md border "
                 onClick={() => setModalOpen(false)}
               >Cancel</button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition"
+                className="px-10 py-3 text-2xl bg-pink-600 text-white rounded-md hover:bg-pink-700 transition"
               >{saving ? 'Saving…' : editingId ? 'Save Changes' : 'Save'}</button>
             </div>
           </form>

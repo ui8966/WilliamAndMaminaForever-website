@@ -124,39 +124,39 @@ export default function CalendarPage() {
 
       {/* 4️⃣ Day-click modal */}
       {modalDate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-6">
           <form
             onSubmit={handleSave}
-            className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4"
+            className="bg-white rounded-2xl p-9 w-full max-w-4xl space-y-10"
           >
-            <h3 className="text-2xl font-heading text-center">
+            <h3 className="text-5xl font-heading text-center">
               {new Date(
                   new Date(modalDate).getTime() + 24 * 60 * 60 * 1000
                 ).toLocaleDateString()}
             </h3>
 
             <label className="block">
-              <span className="block mb-1">Emojis:</span>
+              <span className="block mb-2 text-4xl">Emojis:</span>
               <input
                 type="text"
                 value={form.emojis}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, emojis: e.target.value }))
                 }
-                className="w-full border border-gray-300 rounded p-2 text-2xl text-center"
+                className="w-full border border-gray-300 rounded p-5 text-5xl text-center"
                 placeholder="Pick emojis…"
               />
             </label>
 
             <label className="block">
-              <span className="block mb-1">Notes:</span>
+              <span className="block mb-2 text-4xl">Notes:</span>
               <textarea
                 value={form.notes}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, notes: e.target.value }))
                 }
-                rows={3}
-                className="w-full border border-gray-300 rounded p-2"
+                rows={7}
+                className="w-full border border-gray-300 rounded p-5 text-5xl"
                 placeholder="Optional details…"
               />
             </label>
@@ -165,13 +165,13 @@ export default function CalendarPage() {
               <button
                 type="button"
                 onClick={() => setModalDate(null)}
-                className="px-4 py-2 rounded border"
+                className="px-10 py-3 text-2xl rounded-md border"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-pink-600 text-white rounded"
+                className="px-10 py-3 text-2xl bg-pink-600 text-white rounded-md hover:bg-pink-700 transition"
               >
                 Save
               </button>
