@@ -35,10 +35,11 @@ interface Photo {
 export default function GalleryPage() {
   // --- state ---
   const [photos, setPhotos] = useState<Photo[]>([])
-  type ViewType = 'all' | 'byDate' | 'byPlace'
+  type ViewType = 'all' | 'byDate' | 'byPlace' |'map'
   const [view, setView]           = useState<ViewType>('all')
   const [uploadOpen, setUploadOpen] = useState(false)
   const [editOpen, setEditOpen]     = useState<Photo | null>(null)
+  const [previewOpen, setPreviewOpen] = useState<Photo | null>(null)
 
   // upload form
   const [files, setFiles]   = useState<File[]>([])
@@ -175,6 +176,7 @@ export default function GalleryPage() {
        { key: 'all',     label: 'All Photos' },
        { key: 'byDate',  label: 'By Date'   },
        { key: 'byPlace', label: 'By Place'  },
+       { key: 'map', label:'Map View' },
      ].map(tab => (
        <button
          onClick={() => setView(tab.key as ViewType)}
@@ -193,6 +195,11 @@ export default function GalleryPage() {
   <div className="grid grid-cols-2 gap-6">
     {photos.map(p => (
       <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
+        {/* Preview on click */}
+        <button
+          onClick={() => setPreviewOpen(p)}
+          className="block w-full focus:outline-none" 
+        >  
         <img
           src={p.url}
           alt={p.caption}
@@ -212,6 +219,7 @@ export default function GalleryPage() {
             {p.caption}
           </div>
         </div>
+        </button>
         {/* ← edit/delete controls */}
         <div className="absolute top-2 right-2 flex space-x-2">
           <button
@@ -250,10 +258,14 @@ export default function GalleryPage() {
         <div className="grid grid-cols-2 gap-6">
           {list.map(p => (
             <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
+              <button
+                onClick={() => setPreviewOpen(p)}
+                className="block w-full focus:outline-none"
+              >
               <img
                 src={p.url}
                 alt={p.caption}
-                className="w-full h-48 object-cover"
+                className="w-full h-72 md:h-96 lg:h-[1000px] object-cover"
               />
              <div className="p-4 space-y-1 text-left">
               <div className="text-lg font-medium text-gray-800">
@@ -263,6 +275,7 @@ export default function GalleryPage() {
                 {p.place}
               </div>
             </div>
+            </button>
               {/* ← edit/delete */}
               <div className="absolute top-2 right-2 flex space-x-2">
                 <button
@@ -302,10 +315,14 @@ export default function GalleryPage() {
         <div className="grid grid-cols-2 gap-6">
           {list.map(p => (
             <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
+              <button
+                onClick={() => setPreviewOpen(p)}
+                className="block w-full focus:outline-none"
+              >
               <img
                 src={p.url}
                 alt={p.caption}
-                className="w-full h-48 object-cover"
+                className="w-full h-72 md:h-96 lg:h-[1000px] object-cover"
               />
               <div className="p-4 space-y-1 text-left">
                 <div className="text-sm text-gray-600">
@@ -315,6 +332,7 @@ export default function GalleryPage() {
                   {p.caption}
                 </div>
               </div>
+              </button>
               {/* ← edit/delete */}
               <div className="absolute top-2 right-2 flex space-x-2">
                 <button
@@ -342,6 +360,14 @@ export default function GalleryPage() {
         </div>
       </section>
     ))}
+  </div>
+)}
+
+{view==='map' && (
+  <div className="h-[70vh] rounded-2xl overflow-hidden shadow">
+    {/* e.g. <MapContainer>…</MapContainer> */}
+    {/* later: plot each photo.place with a marker */}
+    Map goes here…
   </div>
 )}
 
@@ -424,6 +450,64 @@ export default function GalleryPage() {
           </form>
         </div>
       )}
+
+      {/* Preview Modal */}
+      {previewOpen && (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+        onClick={() => setPreviewOpen(null)}
+      >
+        <div
+          className="relative bg-white rounded-2xl shadow-lg max-w-full max-h-full overflow-auto"
+          onClick={e => e.stopPropagation()}
+        >
+          {/* big photo */}
+          <img
+            src={previewOpen.url}
+            alt={previewOpen.caption}
+            className="w-auto max-w-[90vw] h-auto max-h-[80vh] object-contain"
+          />
+
+          {/* caption / date / place */}
+          <div className="p-4 space-y-2 text-left">
+            <div className="text-sm text-gray-600">
+              {format(new Date(previewOpen.date), 'PPP')}
+            </div>
+            <div className="text-sm text-gray-600">
+              {previewOpen.place}
+            </div>
+            <div className="text-lg font-medium text-gray-800">
+              {previewOpen.caption}
+            </div>
+          </div>
+
+          {/* edit / delete */}
+          <div className="absolute top-2 right-2 flex space-x-2">
+            <button
+              onClick={() => {
+                setEditOpen(previewOpen)
+                setECaption(previewOpen.caption)
+                setEDate(previewOpen.date)
+                setEPlace(previewOpen.place)
+                setPreviewOpen(null)
+              }}
+              className="bg-white rounded-full p-2 shadow hover:bg-pink-100"
+            >
+              <Edit2 className="w-5 h-5 text-pink-600" />
+            </button>
+            <button
+              onClick={() => {
+                handleDelete(previewOpen)
+                setPreviewOpen(null)
+              }}
+              className="bg-white rounded-full p-2 shadow hover:bg-red-100"
+            >
+              <Trash2 className="w-5 h-5 text-red-600" />
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
 
       {/* Edit Modal */}
       {editOpen && (
