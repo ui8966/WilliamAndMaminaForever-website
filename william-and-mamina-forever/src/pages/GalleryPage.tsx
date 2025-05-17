@@ -160,7 +160,7 @@ export default function GalleryPage() {
    }, {});
 
   return (
-    <div className="p-4 pb-56 bg-pink-50 min-h-screen">
+    <div className="p-4 bg-pink-50 min-h-screen">
       {/* Upload button */}
       <button
         onClick={() => setUploadOpen(true)}
@@ -369,6 +369,9 @@ export default function GalleryPage() {
         </p>
     </div>
 )}
+
+      {/* ─── bottom spacer so last caption scrolls up safely ─── */}
+      <div className="h-32" />
 
       {/* Upload Modal */}
       {uploadOpen && (
