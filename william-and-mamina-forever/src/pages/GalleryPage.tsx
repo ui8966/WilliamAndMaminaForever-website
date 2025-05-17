@@ -465,7 +465,7 @@ export default function GalleryPage() {
           <img
             src={previewOpen.url}
             alt={previewOpen.caption}
-            className="w-auto max-w-[90vw] h-auto max-h-[75vh] object-contain"
+            className="w-auto max-w-[90vw] h-auto max-h-[65vh] object-contain"
           />
 
           {/* caption / date / place */}
@@ -515,42 +515,42 @@ export default function GalleryPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
           <form
             onSubmit={handleEdit}
-            className="bg-white rounded-2xl p-8 w-full max-w-lg space-y-6"
+            className="bg-white rounded-2xl p-8 w-full max-w-2xl space-y-6"
           >
-            <h2 className="text-3xl font-heading text-pink-600 text-center">
+            <h2 className="text-5xl font-heading text-pink-600 text-center">
               Edit Photo
             </h2>
 
             <label className="block">
-              <span className="text-lg">Date</span>
+              <span className="text-4xl">Date</span>
               <input
                 type="date"
                 required
                 value={eDate}
                 onChange={e => setEDate(e.target.value)}
-                className="mt-2 w-full rounded-md border-gray-300 p-2"
+                className="mt-2 w-full text-4xl rounded-md border-gray-300 p-2"
               />
             </label>
 
             <label className="block">
-              <span className="text-lg">Place</span>
+              <span className="text-4xl">Place</span>
               <input
                 type="text"
                 required
                 value={ePlace}
                 onChange={e => setEPlace(e.target.value)}
-                className="mt-2 w-full rounded-md border-gray-300 p-2"
+                className="mt-2 w-full text-4xl rounded-md border-gray-300 p-2"
               />
             </label>
 
             <label className="block">
-              <span className="text-lg">Caption</span>
+              <span className="text-4xl">Caption</span>
               <textarea
                 required
                 rows={2}
                 value={eCaption}
                 onChange={e => setECaption(e.target.value)}
-                className="mt-2 w-full rounded-md border-gray-300 p-2"
+                className="mt-2 w-full text-4xl rounded-md border-gray-300 p-2"
               />
             </label>
 
@@ -558,14 +558,14 @@ export default function GalleryPage() {
               <button
                 type="button"
                 onClick={() => setEditOpen(null)}
-                className="px-6 py-2 text-lg rounded border"
+                className="px-7 py-3 text-3xl rounded border"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2 bg-pink-600 text-white rounded text-lg hover:bg-pink-700 transition"
+                className="px-7 py-3 bg-pink-600 text-white rounded text-3xl hover:bg-pink-700 transition"
               >
                 {saving ? 'Saving…' : 'Save Changes'}
               </button>

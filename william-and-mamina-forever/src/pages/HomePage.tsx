@@ -4,7 +4,15 @@ import CountdownTimer from '../components/CountdownTimer'
 import FloatingHearts from '../components/FloatingHearts'
 import TimerWithHoverHeart from '../components/TimerWithHoverHeart'
 import PetalBackground  from '../components/PetalBackground'
-import LocalClocks from '../components/LocalClocks'
+import LocalCityCard from '../components/LocalCityCard'
+import type { City } from '../components/LocalCityCard'
+
+
+ const CITIES: City[] = [
+
+  { name: 'Oslo',  lat: 59.91, lon: 10.75, locale: 'en-GB', timezone: 'Europe/Oslo' },
+  { name: 'Osaka', lat: 34.69, lon: 135.50, locale: 'ja-JP', timezone: 'Asia/Tokyo' },
+ ]
 
 export default function HomePage() {
   return (
@@ -28,7 +36,9 @@ export default function HomePage() {
         </TimerWithHoverHeart>
       </div>
 
-      <LocalClocks />
+      <div className="mt-8 flex flex-col md:flex-row justify-around space-y-4 md:space-y-0 md:space-x-6 w-full max-w-2xl">
+        {CITIES.map(c => <LocalCityCard key={c.name} city={c} />)}
+      </div>
     </div>
   )
 }
