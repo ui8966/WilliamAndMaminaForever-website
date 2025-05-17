@@ -160,7 +160,7 @@ export default function GalleryPage() {
    }, {});
 
   return (
-    <div className="p-4 pb-36 bg-pink-50 min-h-screen">
+    <div className="p-4 pb-56 bg-pink-50 min-h-screen">
       {/* Upload button */}
       <button
         onClick={() => setUploadOpen(true)}
@@ -372,22 +372,22 @@ export default function GalleryPage() {
 
       {/* Upload Modal */}
       {uploadOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-6">
           <form
             onSubmit={handleUpload}
             className="bg-white rounded-2xl p-8 w-full max-w-lg space-y-6"
           >
-            <h2 className="text-3xl font-heading text-pink-600 text-center">
+            <h2 className="text-5xl font-heading text-pink-600 text-center">
               Upload Photos
             </h2>
 
             <label className="block">
-              <span className="text-lg">Select Images</span>
+              <span className="text-4xl">Select Images</span>
               <input
                 type="file"
                 multiple
                 accept="image/*"
-                className="mt-2"
+                className="mt-3 w-full text-3xl rounded-md border-gray-300 p-2"
                 onChange={e => {
                   if (!e.target.files) return
                   setFiles(Array.from(e.target.files))
@@ -396,36 +396,36 @@ export default function GalleryPage() {
             </label>
 
             <label className="block">
-              <span className="text-lg">Date</span>
+              <span className="text-4xl">Date</span>
               <input
                 type="date"
                 required
                 value={date}
                 onChange={e => setDate(e.target.value)}
-                className="mt-2 w-full rounded-md border-gray-300 p-2"
+                className="mt-2 w-full text-3xl rounded-md border-gray-300 p-2"
               />
             </label>
 
             <label className="block">
-              <span className="text-lg">Place (City, Country)</span>
+              <span className="text-3xl">Place (City, Country)</span>
               <input
                 type="text"
                 required
                 value={place}
                 onChange={e => setPlace(e.target.value)}
-                className="mt-2 w-full rounded-md border-gray-300 p-2"
+                className="mt-2 w-full text-3xl rounded-md border-gray-300 p-2"
                 placeholder="e.g. Oslo, Norway"
               />
             </label>
 
             <label className="block">
-              <span className="text-lg">Caption</span>
+              <span className="text-3xl">Caption</span>
               <textarea
                 required
                 rows={2}
                 value={caption}
                 onChange={e => setCaption(e.target.value)}
-                className="mt-2 w-full rounded-md border-gray-300 p-2"
+                className="mt-2 w-full text-3xl rounded-md border-gray-300 p-2"
                 placeholder="A brief caption…"
               />
             </label>
@@ -434,14 +434,14 @@ export default function GalleryPage() {
               <button
                 type="button"
                 onClick={() => setUploadOpen(false)}
-                className="px-6 py-2 text-lg rounded border"
+                className="px-6 py-2 text-3xl rounded border"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2 bg-pink-600 text-white rounded text-lg hover:bg-pink-700 transition"
+                className="px-6 py-2 bg-pink-600 text-white rounded text-3xl hover:bg-pink-700 transition"
               >
                 {saving ? 'Uploading…' : 'Upload'}
               </button>
@@ -467,6 +467,15 @@ export default function GalleryPage() {
             alt={previewOpen.caption}
             className="w-auto max-w-[90vw] h-auto max-h-[65vh] object-contain"
           />
+
+          {/* ← CLOSE BUTTON */}
+            <button
+              onClick={() => setPreviewOpen(null)}
+              className="absolute top-4 left-4 bg-white rounded-full p-2 shadow text-5xl leading-none focus:outline-none"
+              title="Close"
+            >
+              ×
+            </button>
 
           {/* caption / date / place */}
           <div className="mt-6 space-y-2 text-left">
