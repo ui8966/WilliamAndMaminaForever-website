@@ -35,8 +35,8 @@ interface Photo {
 export default function GalleryPage() {
   // --- state ---
   const [photos, setPhotos] = useState<Photo[]>([])
-  type ViewType = 'all' | 'byDate' | 'byPlace' |'map'
-  const [view, setView]           = useState<ViewType>('all')
+  type ViewType = 'byDate' | 'byPlace' | 'all' | 'map'
+  const [view, setView]           = useState<ViewType>('byDate')
   const [uploadOpen, setUploadOpen] = useState(false)
   const [editOpen, setEditOpen]     = useState<Photo | null>(null)
   const [previewOpen, setPreviewOpen] = useState<Photo | null>(null)
@@ -160,28 +160,28 @@ export default function GalleryPage() {
    }, {});
 
   return (
-    <div className="p-4 bg-pink-50 min-h-screen">
+    <div className="p-4 pb-36 bg-pink-50 min-h-screen">
       {/* Upload button */}
       <button
         onClick={() => setUploadOpen(true)}
-        className="fixed right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
+        className="fixed z-50 right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
         style={{ bottom: 'calc(env(safe-area-inset-bottom) + 9rem)' }}
       >
         <Plus className="w-20 h-20" />
       </button>
 
       {/* ─── TAB BAR ───────────────────────────── */}
-   <nav className="flex space-x-4 mb-6">
+   <nav className="flex space-x-6 mb-8">
      {[
-       { key: 'all',     label: 'All Photos' },
        { key: 'byDate',  label: 'By Date'   },
        { key: 'byPlace', label: 'By Place'  },
+       { key: 'all',     label: 'All Photos' },
        { key: 'map', label:'Map View' },
      ].map(tab => (
        <button
          onClick={() => setView(tab.key as ViewType)}
          className={`
-           px-4 py-2 rounded-md 
+           px-7 py-4 rounded-md text-3xl font-medium
            ${view===tab.key ? 'bg-pink-600 text-white' : 'bg-white shadow'}
          `}
        >
@@ -205,23 +205,23 @@ export default function GalleryPage() {
           alt={p.caption}
           className="w-full h-72 md:h-96 lg:h-[1000px] object-cover"
         />
-        <div className="p-4 space-y-1 text-left">
+        <div className="p-6 space-y-2 text-left">
           {/* Date */}
-          <div className="text-sm text-gray-600">
+          <div className="text-base text-gray-600">
             {format(new Date(p.date), 'PPP')}
           </div>
           {/* Place */}
-          <div className="text-sm text-gray-600">
+          <div className="text-base text-gray-600">
             {p.place}
           </div>
           {/* Caption */}
-          <div className="text-lg font-medium text-gray-800">
+          <div className="text-2xl font-medium text-gray-800">
             {p.caption}
           </div>
         </div>
         </button>
         {/* ← edit/delete controls */}
-        <div className="absolute top-2 right-2 flex space-x-2">
+        <div className="absolute top-4 right-4 flex space-x-3">
           <button
             onClick={() => {
               setEditOpen(p)
@@ -229,17 +229,16 @@ export default function GalleryPage() {
               setEDate(p.date)
               setEPlace(p.place)
             }}
-            className="bg-white rounded-full p-2 shadow hover:bg-pink-100"
+            className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
             title="Edit"
           >
-            <Edit2 className="w-5 h-5 text-pink-600" />
+            <Edit2 className="w-10 h-10 text-pink-600" />
           </button>
           <button
             onClick={() => handleDelete(p)}
-            className="bg-white rounded-full p-2 shadow hover:bg-red-100"
-            title="Delete"
+            className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"            title="Delete"
           >
-            <Trash2 className="w-5 h-5 text-red-600" />
+            <Trash2 className="w-10 h-10 text-red-600" />
           </button>
         </div>
       </div>
@@ -252,7 +251,7 @@ export default function GalleryPage() {
   <div className="space-y-8">
     {Object.entries(byDateGroups).map(([d,list]) => (
       <section key={d}>
-        <h2 className="text-2xl font-heading text-pink-600 mb-4">
+        <h2 className="text-4xl font-heading text-pink-600 mb-4">
           {format(new Date(d), 'PPP')}
         </h2>
         <div className="grid grid-cols-2 gap-6">
@@ -267,17 +266,17 @@ export default function GalleryPage() {
                 alt={p.caption}
                 className="w-full h-72 md:h-96 lg:h-[1000px] object-cover"
               />
-             <div className="p-4 space-y-1 text-left">
-              <div className="text-lg font-medium text-gray-800">
+             <div className="p-6 space-y-2 text-left">
+              <div className="text-2xl font-medium text-gray-800">
                 {p.caption}
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="text-base text-gray-600">
                 {p.place}
               </div>
             </div>
             </button>
               {/* ← edit/delete */}
-              <div className="absolute top-2 right-2 flex space-x-2">
+              <div className="absolute top-4 right-4 flex space-x-3">
                 <button
                   onClick={() => {
                     setEditOpen(p)
@@ -285,17 +284,17 @@ export default function GalleryPage() {
                     setEDate(p.date)
                     setEPlace(p.place)
                   }}
-                  className="bg-white rounded-full p-2 shadow hover:bg-pink-100"
+                  className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
                   title="Edit"
                 >
-                  <Edit2 className="w-5 h-5 text-pink-600" />
+                  <Edit2 className="w-10 h-10 text-pink-600" />
                 </button>
                 <button
                   onClick={() => handleDelete(p)}
-                  className="bg-white rounded-full p-2 shadow hover:bg-red-100"
+                  className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
                   title="Delete"
                 >
-                  <Trash2 className="w-5 h-5 text-red-600" />
+                  <Trash2 className="w-10 h-10 text-red-600" />
                 </button>
               </div>
             </div>
@@ -311,7 +310,7 @@ export default function GalleryPage() {
   <div className="space-y-8">
     {Object.entries(byPlaceGroups).map(([city,list]) => (
       <section key={city}>
-        <h2 className="text-2xl font-heading text-pink-600 mb-4">{city}</h2>
+        <h2 className="text-4xl font-heading text-pink-600 mb-4">{city}</h2>
         <div className="grid grid-cols-2 gap-6">
           {list.map(p => (
             <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
@@ -324,17 +323,17 @@ export default function GalleryPage() {
                 alt={p.caption}
                 className="w-full h-72 md:h-96 lg:h-[1000px] object-cover"
               />
-              <div className="p-4 space-y-1 text-left">
-                <div className="text-sm text-gray-600">
+              <div className="p-6 space-y-2 text-left">
+                <div className="text-base text-gray-600">
                   {format(new Date(p.date), 'PPP')}
                 </div>
-                <div className="text-lg font-medium text-gray-800">
+                <div className="text-2xl font-medium text-gray-800">
                   {p.caption}
                 </div>
               </div>
               </button>
               {/* ← edit/delete */}
-              <div className="absolute top-2 right-2 flex space-x-2">
+              <div className="absolute top-4 right-4 flex space-x-3">
                 <button
                   onClick={() => {
                     setEditOpen(p)
@@ -342,17 +341,17 @@ export default function GalleryPage() {
                     setEDate(p.date)
                     setEPlace(p.place)
                   }}
-                  className="bg-white rounded-full p-2 shadow hover:bg-pink-100"
+                  className="bg-white rounded-full p-5 shadow hover:bg-pink-100"
                   title="Edit"
                 >
-                  <Edit2 className="w-5 h-5 text-pink-600" />
+                  <Edit2 className="w-10 h-10 text-pink-600" />
                 </button>
                 <button
                   onClick={() => handleDelete(p)}
-                  className="bg-white rounded-full p-2 shadow hover:bg-red-100"
+                  className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
                   title="Delete"
                 >
-                  <Trash2 className="w-5 h-5 text-red-600" />
+                  <Trash2 className="w-10 h-10 text-red-600" />
                 </button>
               </div>
             </div>
@@ -364,11 +363,11 @@ export default function GalleryPage() {
 )}
 
 {view==='map' && (
-  <div className="h-[70vh] rounded-2xl overflow-hidden shadow">
-    {/* e.g. <MapContainer>…</MapContainer> */}
-    {/* later: plot each photo.place with a marker */}
-    Map goes here…
-  </div>
+    <div className="p-4 text-gray-700">
+        <p className="text-3xl font-bold text-center text-blue-600">
+        I will add a map view here! 🌍
+        </p>
+    </div>
 )}
 
       {/* Upload Modal */}
@@ -454,35 +453,36 @@ export default function GalleryPage() {
       {/* Preview Modal */}
       {previewOpen && (
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-6"
         onClick={() => setPreviewOpen(null)}
       >
         <div
-          className="relative bg-white rounded-2xl shadow-lg max-w-full max-h-full overflow-auto"
-          onClick={e => e.stopPropagation()}
+            className="relative bg-white rounded-2xl shadow-lg p-6
+                       max-w-[90vw] max-h-[90vh] overflow-auto"
+            onClick={e => e.stopPropagation()}
         >
           {/* big photo */}
           <img
             src={previewOpen.url}
             alt={previewOpen.caption}
-            className="w-auto max-w-[90vw] h-auto max-h-[80vh] object-contain"
+            className="w-auto max-w-[90vw] h-auto max-h-[75vh] object-contain"
           />
 
           {/* caption / date / place */}
-          <div className="p-4 space-y-2 text-left">
-            <div className="text-sm text-gray-600">
+          <div className="mt-6 space-y-2 text-left">
+            <div className="text-lg text-gray-600">
               {format(new Date(previewOpen.date), 'PPP')}
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-lg text-gray-600">
               {previewOpen.place}
             </div>
-            <div className="text-lg font-medium text-gray-800">
+            <div className="text-2xl font-semibold text-gray-800">
               {previewOpen.caption}
             </div>
           </div>
 
           {/* edit / delete */}
-          <div className="absolute top-2 right-2 flex space-x-2">
+          <div className="absolute top-4 right-4 flex space-x-3">
             <button
               onClick={() => {
                 setEditOpen(previewOpen)
@@ -491,18 +491,19 @@ export default function GalleryPage() {
                 setEPlace(previewOpen.place)
                 setPreviewOpen(null)
               }}
-              className="bg-white rounded-full p-2 shadow hover:bg-pink-100"
-            >
-              <Edit2 className="w-5 h-5 text-pink-600" />
+              className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
+              title="Edit"
+              >
+              <Edit2 className="w-10 h-10 text-pink-600" />
             </button>
             <button
               onClick={() => {
                 handleDelete(previewOpen)
                 setPreviewOpen(null)
               }}
-              className="bg-white rounded-full p-2 shadow hover:bg-red-100"
+              className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"            title="Delete"
             >
-              <Trash2 className="w-5 h-5 text-red-600" />
+              <Trash2 className="w-10 h-10 text-red-600" />
             </button>
           </div>
         </div>
