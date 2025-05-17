@@ -18,10 +18,10 @@
     "react-calendar": "^5.1.0",
     "react-day-picker": "^9.6.7",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.0"
+    "react-router-dom": "^7.6.0",
+    "william-and-mamina-forever": "file:"
   },
   "devDependencies": {
-    "firebase": "^11.7.1",
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.2",
     "@types/react-calendar": "^4.1.0",
@@ -32,6 +32,7 @@
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
+    "firebase": "^11.7.1",
     "globals": "^16.0.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.6",
