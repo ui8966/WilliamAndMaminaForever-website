@@ -35,6 +35,8 @@ interface Photo {
 export default function GalleryPage() {
   // --- state ---
   const [photos, setPhotos] = useState<Photo[]>([])
+  type ViewType = 'all' | 'byDate' | 'byPlace'
+  const [view, setView]           = useState<ViewType>('all')
   const [uploadOpen, setUploadOpen] = useState(false)
   const [editOpen, setEditOpen]     = useState<Photo | null>(null)
 
@@ -141,6 +143,21 @@ export default function GalleryPage() {
     }
   }
 
+   // --- grouping for the two new views ---
+ const byDateGroups = photos
+   .sort((a,b)=> a.date.localeCompare(b.date))
+   .reduce<Record<string, Photo[]>>((acc,p)=>{
+     (acc[p.date] ??= []).push(p)
+     return acc
+   }, {})
+
+ const byPlaceGroups = photos
+   .reduce<Record<string, Photo[]>>((acc, p) => {
+     const city = p.place.split(',')[0];
+     (acc[city] ??= []).push(p);
+     return acc;
+   }, {});
+
   return (
     <div className="p-4 bg-pink-50 min-h-screen">
       {/* Upload button */}
@@ -152,33 +169,181 @@ export default function GalleryPage() {
         <Plus className="w-20 h-20" />
       </button>
 
-      {/* Photo grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {photos.map(p => (
-          <div key={p.id} className="relative bg-white rounded-2xl shadow-lg overflow-hidden">
-            <img src={p.url} alt={p.caption}
-                 className="w-full h-64 object-cover" />
-            <div className="p-4 space-y-2">
-              <div className="text-lg font-medium">{format(new Date(p.date), 'PPP')}</div>
-              <div className="text-gray-600">{p.place}</div>
-              <div className="text-gray-800 text-xl">{p.caption}</div>
-            </div>
-            <div className="absolute top-2 right-2 flex space-x-2">
-              <button onClick={() => {
-                setEditOpen(p)
-                setECaption(p.caption)
-                setEDate(p.date)
-                setEPlace(p.place)
-              }} className="bg-white p-2 rounded-full shadow hover:bg-pink-50">
-                <Edit2 className="w-5 h-5 text-gray-600" />
-              </button>
-              <button onClick={() => handleDelete(p)} className="bg-white p-2 rounded-full shadow hover:bg-red-50">
-                <Trash2 className="w-5 h-5 text-gray-600" />
-              </button>
-            </div>
+      {/* ─── TAB BAR ───────────────────────────── */}
+   <nav className="flex space-x-4 mb-6">
+     {[
+       { key: 'all',     label: 'All Photos' },
+       { key: 'byDate',  label: 'By Date'   },
+       { key: 'byPlace', label: 'By Place'  },
+     ].map(tab => (
+       <button
+         onClick={() => setView(tab.key as ViewType)}
+         className={`
+           px-4 py-2 rounded-md 
+           ${view===tab.key ? 'bg-pink-600 text-white' : 'bg-white shadow'}
+         `}
+       >
+         {tab.label}
+       </button>
+     ))}
+   </nav>
+
+   {/* ─── ALL PHOTOS ───────────────────────── */}
+{view==='all' && (
+  <div className="grid grid-cols-2 gap-6">
+    {photos.map(p => (
+      <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
+        <img
+          src={p.url}
+          alt={p.caption}
+          className="w-full h-72 md:h-96 lg:h-[1000px] object-cover"
+        />
+        <div className="p-4 space-y-1 text-left">
+          {/* Date */}
+          <div className="text-sm text-gray-600">
+            {format(new Date(p.date), 'PPP')}
           </div>
-        ))}
+          {/* Place */}
+          <div className="text-sm text-gray-600">
+            {p.place}
+          </div>
+          {/* Caption */}
+          <div className="text-lg font-medium text-gray-800">
+            {p.caption}
+          </div>
+        </div>
+        {/* ← edit/delete controls */}
+        <div className="absolute top-2 right-2 flex space-x-2">
+          <button
+            onClick={() => {
+              setEditOpen(p)
+              setECaption(p.caption)
+              setEDate(p.date)
+              setEPlace(p.place)
+            }}
+            className="bg-white rounded-full p-2 shadow hover:bg-pink-100"
+            title="Edit"
+          >
+            <Edit2 className="w-5 h-5 text-pink-600" />
+          </button>
+          <button
+            onClick={() => handleDelete(p)}
+            className="bg-white rounded-full p-2 shadow hover:bg-red-100"
+            title="Delete"
+          >
+            <Trash2 className="w-5 h-5 text-red-600" />
+          </button>
+        </div>
       </div>
+    ))}
+  </div>
+)}
+
+   {/* ─── BY DATE ───────────────────────────── */}
+   {view==='byDate' && (
+  <div className="space-y-8">
+    {Object.entries(byDateGroups).map(([d,list]) => (
+      <section key={d}>
+        <h2 className="text-2xl font-heading text-pink-600 mb-4">
+          {format(new Date(d), 'PPP')}
+        </h2>
+        <div className="grid grid-cols-2 gap-6">
+          {list.map(p => (
+            <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
+              <img
+                src={p.url}
+                alt={p.caption}
+                className="w-full h-48 object-cover"
+              />
+             <div className="p-4 space-y-1 text-left">
+              <div className="text-lg font-medium text-gray-800">
+                {p.caption}
+              </div>
+              <div className="text-sm text-gray-600">
+                {p.place}
+              </div>
+            </div>
+              {/* ← edit/delete */}
+              <div className="absolute top-2 right-2 flex space-x-2">
+                <button
+                  onClick={() => {
+                    setEditOpen(p)
+                    setECaption(p.caption)
+                    setEDate(p.date)
+                    setEPlace(p.place)
+                  }}
+                  className="bg-white rounded-full p-2 shadow hover:bg-pink-100"
+                  title="Edit"
+                >
+                  <Edit2 className="w-5 h-5 text-pink-600" />
+                </button>
+                <button
+                  onClick={() => handleDelete(p)}
+                  className="bg-white rounded-full p-2 shadow hover:bg-red-100"
+                  title="Delete"
+                >
+                  <Trash2 className="w-5 h-5 text-red-600" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+)}
+
+   {/* ─── BY PLACE ──────────────────────────── */}
+   {view==='byPlace' && (
+  <div className="space-y-8">
+    {Object.entries(byPlaceGroups).map(([city,list]) => (
+      <section key={city}>
+        <h2 className="text-2xl font-heading text-pink-600 mb-4">{city}</h2>
+        <div className="grid grid-cols-2 gap-6">
+          {list.map(p => (
+            <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
+              <img
+                src={p.url}
+                alt={p.caption}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4 space-y-1 text-left">
+                <div className="text-sm text-gray-600">
+                  {format(new Date(p.date), 'PPP')}
+                </div>
+                <div className="text-lg font-medium text-gray-800">
+                  {p.caption}
+                </div>
+              </div>
+              {/* ← edit/delete */}
+              <div className="absolute top-2 right-2 flex space-x-2">
+                <button
+                  onClick={() => {
+                    setEditOpen(p)
+                    setECaption(p.caption)
+                    setEDate(p.date)
+                    setEPlace(p.place)
+                  }}
+                  className="bg-white rounded-full p-2 shadow hover:bg-pink-100"
+                  title="Edit"
+                >
+                  <Edit2 className="w-5 h-5 text-pink-600" />
+                </button>
+                <button
+                  onClick={() => handleDelete(p)}
+                  className="bg-white rounded-full p-2 shadow hover:bg-red-100"
+                  title="Delete"
+                >
+                  <Trash2 className="w-5 h-5 text-red-600" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+)}
 
       {/* Upload Modal */}
       {uploadOpen && (
