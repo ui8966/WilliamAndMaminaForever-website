@@ -182,6 +182,9 @@ return (
         <Plus className="w-20 h-20" />
       </button>
 
+      {/* ─── bottom spacer so last caption scrolls up safely ─── */}
+     <div className="h-32" />
+
       {/* Note Editor Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50 p-6">
