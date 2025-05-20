@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
+//import { Link } from 'react-router-dom'
+
 import { useAuth } from '../contexts/AuthContext'
 
 export default function LoginPage() {
@@ -71,12 +73,14 @@ export default function LoginPage() {
           {loading ? 'Logging in…' : 'Log in'}
         </button>
 
+{/* commented out possibility to sign up */}
+{/* 
         <p className="text-center text-sm">
           Need an account?{' '}
           <Link to="/register" className="text-pink-600 underline">
             Sign up
           </Link>
-        </p>
+        </p>  */}
       </form>
     </div>
   )

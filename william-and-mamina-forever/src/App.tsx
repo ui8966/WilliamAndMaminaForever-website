@@ -1,6 +1,6 @@
 // src/App.tsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import ProtectedRoute from './components/ProtectedRoute'      // ← NEW
+import ProtectedRoute from './components/ProtectedRoute'
 import Layout       from './layout/Layout'
 import HomePage     from './pages/HomePage'
 import NotesPage    from './pages/NotesPage'
@@ -8,7 +8,7 @@ import GalleryPage  from './pages/GalleryPage'
 import MapPage      from './pages/MapPage'
 import CalendarPage from './pages/CalendarPage'
 import LoginPage    from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
+//import RegisterPage from './pages/RegisterPage'
 import ProfilePage from './pages/ProfilePage'
 
 export default function App() {
@@ -17,7 +17,7 @@ export default function App() {
       <Routes>
         {/* public auth routes */}
         <Route path="/login"    element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        {/* commented out Register route :    <Route path="/register" element={<RegisterPage />} /> */}
 
         {/* all the rest are protected */}
         <Route
