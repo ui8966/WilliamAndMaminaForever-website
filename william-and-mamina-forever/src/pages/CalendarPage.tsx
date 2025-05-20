@@ -161,8 +161,10 @@ export default function CalendarPage() {
               className="p-9 space-y-10"
             >
               <h3 className="text-6xl font-heading text-center">
-                {new Date(modalDate).toLocaleDateString()}
-+              </h3>
+                {new Date(
+                    new Date(modalDate).getTime() + 24 * 60 * 60 * 1000
+                  ).toLocaleDateString()}
+              </h3>
 
             <label className="block">
               <span className="block mb-2 text-4xl">Emojis:</span>
