@@ -5,7 +5,6 @@ export interface City {
   name: string
   lat: number
   lon: number
-  locale?: string
   timezone: string
 }
 

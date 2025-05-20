@@ -82,14 +82,15 @@ export default function CalendarPage() {
           value={value}
           onClickDay={handleDayClick}
           className="rounded-2xl shadow-lg overflow-hidden"
+          navigationClassName="flex items-center justify-center space-x-8 px-4 py-2"
           minDetail="month"
           maxDetail="month"
           prev2Label={null}
           next2Label={null}
-          prevLabel={<span className="text-6xl md:text-7xl">‹</span>}
-          nextLabel={<span className="text-6xl md:text-7xl">›</span>}
+          prevLabel={<span className="text-6xl md:text-8xl mx-6">‹</span>}
+          nextLabel={<span className="text-6xl md:text-8xl mx-6 ">›</span>}
           navigationLabel={({ label }: { label: string }) => (
-            <span className="text-5xl md:text-6xl font-heading">{label}</span>
+            <span className="text-5xl md:text-6xl font-heading ">{label}</span>
           )}
           tileContent={({ date, view }: { date: Date; view: string }) => {
             if (view !== 'month') return null
@@ -125,15 +126,43 @@ export default function CalendarPage() {
       {/* 4️⃣ Day-click modal */}
       {modalDate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-6">
-          <form
-            onSubmit={handleSave}
-            className="bg-white rounded-2xl p-9 w-full max-w-4xl space-y-10"
-          >
-            <h3 className="text-6xl font-heading text-center">
-              {new Date(
-                  new Date(modalDate).getTime() + 24 * 60 * 60 * 1000
-                ).toLocaleDateString()}
-            </h3>
+          <div className="relative bg-white rounded-2xl w-full max-w-4xl overflow-hidden">
+            {/* ← Prev / Next arrows */}
+            <button
+              onClick={() => {
+                const prev = new Date(modalDate)
+                prev.setDate(prev.getDate() - 1)
+                setModalDate(prev.toISOString().slice(0,10))
+                const ev = events[prev.toISOString().slice(0,10)]
+                setForm({ emojis: ev?.emojis.join('')||'', notes: ev?.notes||'' })
+              }}
+              className="absolute left-1 top-1/2 -translate-y-1/2 text-9xl text-gray-400 hover:text-gray-600"
+              title="Previous day"
+            >
+              ‹
+            </button>
+
+            <button
+              onClick={() => {
+                const next = new Date(modalDate)
+                next.setDate(next.getDate() + 1)
+                setModalDate(next.toISOString().slice(0,10))
+                const ev = events[next.toISOString().slice(0,10)]
+                setForm({ emojis: ev?.emojis.join('')||'', notes: ev?.notes||'' })
+              }}
+              className="absolute right-1 top-1/2 -translate-y-1/2 text-9xl text-gray-400 hover:text-gray-600"
+              title="Next day"
+            >
+              ›
+            </button>
+
+            <form
+              onSubmit={handleSave}
+              className="p-9 space-y-10"
+            >
+              <h3 className="text-6xl font-heading text-center">
+                {new Date(modalDate).toLocaleDateString()}
++              </h3>
 
             <label className="block">
               <span className="block mb-2 text-4xl">Emojis:</span>
@@ -144,7 +173,7 @@ export default function CalendarPage() {
                   setForm((f) => ({ ...f, emojis: e.target.value }))
                 }
                 className="w-full border border-gray-300 rounded p-5 text-5xl text-center"
-                placeholder="Pick emojis…"
+                placeholder="Pick 1-2 emojis…"
               />
             </label>
 
@@ -177,6 +206,7 @@ export default function CalendarPage() {
               </button>
             </div>
           </form>
+          </div>
         </div>
       )}
     </div>
