@@ -87,10 +87,10 @@ export default function CalendarPage() {
           maxDetail="month"
           prev2Label={null}
           next2Label={null}
-          prevLabel={<span className="text-6xl md:text-8xl mx-6">‹</span>}
-          nextLabel={<span className="text-6xl md:text-8xl mx-6 ">›</span>}
+          prevLabel={<span className="text-6xl md:text-9xl mx-6">‹</span>}
+          nextLabel={<span className="text-6xl md:text-9xl mx-6 ">›</span>}
           navigationLabel={({ label }: { label: string }) => (
-            <span className="text-5xl md:text-6xl font-heading ">{label}</span>
+            <span className="block mb-4 text-5xl md:text-6xl font-heading ">{label}</span>
           )}
           tileContent={({ date, view }: { date: Date; view: string }) => {
             if (view !== 'month') return null
