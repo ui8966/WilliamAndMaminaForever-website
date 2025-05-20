@@ -136,7 +136,7 @@ export default function CalendarPage() {
                 const ev = events[prev.toISOString().slice(0,10)]
                 setForm({ emojis: ev?.emojis.join('')||'', notes: ev?.notes||'' })
               }}
-              className="absolute left-1 top-1/2 -translate-y-1/2 text-9xl text-gray-400 hover:text-gray-600"
+              className="absolute left-0 top-1/2 -translate-y-1/2 text-[10rem]  text-gray-400 hover:text-gray-600"
               title="Previous day"
             >
               ‹
@@ -150,7 +150,7 @@ export default function CalendarPage() {
                 const ev = events[next.toISOString().slice(0,10)]
                 setForm({ emojis: ev?.emojis.join('')||'', notes: ev?.notes||'' })
               }}
-              className="absolute right-1 top-1/2 -translate-y-1/2 text-9xl text-gray-400 hover:text-gray-600"
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-[10rem]  text-gray-400 hover:text-gray-600"
               title="Next day"
             >
               ›

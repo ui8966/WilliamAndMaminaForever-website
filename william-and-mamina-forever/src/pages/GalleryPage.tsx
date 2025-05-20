@@ -454,16 +454,39 @@ export default function GalleryPage() {
       )}
 
       {/* Preview Modal */}
-      {previewOpen && (
-      <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-6"
-        onClick={() => setPreviewOpen(null)}
-      >
-        <div
-            className="relative bg-white rounded-2xl shadow-lg p-6
-                       max-w-[90vw] max-h-[90vh] overflow-auto"
-            onClick={e => e.stopPropagation()}
-        >
+      {previewOpen && (() => {
+        const idx = photos.findIndex(p => p.id === previewOpen.id)
+        return (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-6"
+            onClick={() => setPreviewOpen(null)}
+          >
+            <div
+              className="relative bg-white rounded-2xl shadow-lg p-6
+                         max-w-[90vw] max-h-[90vh] overflow-auto"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Prev arrow */}
+              {idx > 0 && (
+                <button
+                  onClick={() => setPreviewOpen(photos[idx - 1])}
+                  className="absolute left-1 top-1/2 -translate-y-1/2 text-[10rem] text-gray-400 hover:text-gray-600"
+                  title="Previous photo"
+                >
+                  ‹
+                </button>
+              )}
+
+              {/* Next arrow */}
+              {idx < photos.length - 1 && (
+                <button
+                  onClick={() => setPreviewOpen(photos[idx + 1])}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 text-[10rem]  text-gray-400 hover:text-gray-600"
+                  title="Next photo"
+                >
+                  ›
+                </button>
+              )}
           {/* big photo */}
           <img
             src={previewOpen.url}
@@ -513,14 +536,16 @@ export default function GalleryPage() {
                 handleDelete(previewOpen)
                 setPreviewOpen(null)
               }}
-              className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"            title="Delete"
+              className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
+              title="Delete"
             >
               <Trash2 className="w-10 h-10 text-red-600" />
             </button>
           </div>
-        </div>
-      </div>
-    )}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Edit Modal */}
       {editOpen && (
