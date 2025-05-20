@@ -1,15 +1,8 @@
 // src/components/LocalClocks.tsx
 import { useEffect, useState } from 'react'
 
-// pull this helper out so you can import it elsewhere
-export function formatTime(date: Date, locale: string, timeZone: string) {
-  return date.toLocaleTimeString(locale, {
-    hour:   '2-digit',
-    minute: '2-digit',
-    hour12: true,
-    timeZone,
-  })
-}
+// import the helper from a separate file
+import { formatTime } from '../utils/formatTime'
 
 export default function LocalClocks() {
   const [now, setNow] = useState(new Date())
