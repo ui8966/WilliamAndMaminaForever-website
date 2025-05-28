@@ -46,7 +46,6 @@ export default function LocalCityCard({ city }: { city: City }) {
     )
       .then(r => r.json())
       .then(json => {
-                    console.log(json.current_weather)
         if (json.current_weather) {
           setWeather({
             temperature: json.current_weather.temperature,

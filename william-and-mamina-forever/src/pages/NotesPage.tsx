@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { firestore } from '../lib/firebase'
-import { User as UserIcon } from 'lucide-react'
+import { User as UserIcon,  Pin as PinIcon  } from 'lucide-react'
 import type { QuerySnapshot, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore'
 import {
   collection,
@@ -23,11 +23,13 @@ interface Note {
   author: string
   authorPhoto?: string
   createdAt: Date
+  pinned: boolean
 }
 
 export default function NotesPage() {
   const { user } = useAuth()
   const [notes, setNotes] = useState<Note[]>([])
+  const [pinned, setPinned] = useState(false)
 
   // Note editor modal state
   const [modalOpen, setModalOpen] = useState(false)
@@ -40,10 +42,11 @@ export default function NotesPage() {
 
   // Subscribe to notes collection
   useEffect(() => {
-    const notesQuery = query(
-      collection(firestore, 'notes'),
-      orderBy('createdAt', 'desc')
-    )
+  const notesQuery = query(
+    collection(firestore, 'notes'),
+    orderBy('pinned', 'desc'),    // ← first order by pinned flag
+    orderBy('createdAt','desc')     // ← then by date
+  )
     const unsub = onSnapshot(
       notesQuery,
       (snapshot: QuerySnapshot<DocumentData>) => {
@@ -56,6 +59,7 @@ export default function NotesPage() {
               author: data.author,
               authorPhoto: data.authorPhoto ?? null,
               createdAt: data.createdAt?.toDate() ?? new Date(),
+              pinned: data.pinned ?? false 
             }
           }
         )
@@ -70,9 +74,11 @@ export default function NotesPage() {
     if (note) {
       setEditingId(note.id)
       setNewContent(note.content)
+      setPinned(note.pinned)
     } else {
       setEditingId(null)
       setNewContent('')
+      setPinned(false)
     }
     setModalOpen(true)
   }
@@ -87,12 +93,15 @@ export default function NotesPage() {
         await updateDoc(doc(firestore, 'notes', editingId), {
           content: newContent.trim(),
           authorPhoto: user.photoURL || null,
+          pinned,
+          updatedAt: serverTimestamp(),  
         })
       } else {
         await addDoc(collection(firestore, 'notes'), {
           content: newContent.trim(),
           author:  user.displayName || user.email!,
           authorPhoto: user.photoURL || null,
+          pinned,
           createdAt: serverTimestamp(),
         })
       }
@@ -117,10 +126,10 @@ export default function NotesPage() {
 return (
     <div className="p-4 bg-pink-50 min-h-screen">
       <div className="space-y-6">  {/* more breathing room */}
-        {notes.map((note, i) => (
+        {notes.map((note) => (
           <div
             key={note.id}
-            className={`bg-white rounded-2xl shadow-md p-6 ${i === 0 ? 'sticky top-6 z-10 mb-6' : ''}`}
+            className="bg-white rounded-2xl shadow-md p-6"
           >
             {/* Header */}
             <div className="flex justify-between items-center">
@@ -139,6 +148,8 @@ return (
                 <span className="font-semibold text-gray-800 text-2xl md:text-4xl">
                   {note.author}
                 </span>
+              {note.pinned && <PinIcon className="w-10 h-10 text-pink-600" />}
+
               </div>
 
               {/* Edit/Delete */}
@@ -195,6 +206,16 @@ return (
             <h3 className="text-6xl font-heading text-pink-600 text-center">
               {editingId ? 'Edit Note' : 'New Note'}
             </h3>
+            <div className="flex items- justify-left space-x-3">
+              <input
+                type="checkbox"
+                id="pin"
+                checked={pinned}
+                onChange={e => setPinned(e.target.checked)}
+                className="w-11 h-11 "
+              />
+              {<PinIcon className="w-11 h-11 text-pink-600" />}
+            </div>
             <textarea
               value={newContent}
               onChange={e => setNewContent(e.target.value)}
