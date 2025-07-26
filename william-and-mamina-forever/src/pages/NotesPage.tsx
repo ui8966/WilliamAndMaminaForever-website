@@ -124,7 +124,7 @@ export default function NotesPage() {
   }
 
 return (
-    <div className="p-4 bg-pink-50 min-h-screen">
+    <div className="p-4 bg-gradient-to-b from-sky-200 via-blue-100 min-h-screen">
       <div className="space-y-6">  {/* more breathing room */}
         {notes.map((note) => (
           <div

@@ -3,6 +3,9 @@ export default function PetalBackground() {
   // generate 20 petals
   const petals = Array.from({ length: 20 });
 
+    // choose emoji randomly
+  const getEmoji = () => (Math.random() < 0.5 ? '🌻' : '🏖️');
+
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden">
       {petals.map((_, i) => {
@@ -25,7 +28,7 @@ export default function PetalBackground() {
               animationIterationCount: 'infinite',
             }}
           >
-            🌸
+            {getEmoji()}
           </div>
         )
       })}

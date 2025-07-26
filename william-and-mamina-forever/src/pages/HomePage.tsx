@@ -16,7 +16,8 @@ import type { City } from '../components/LocalCityCard'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-pink-gradient flex flex-col items-center justify-center text-center p-4 font-body">
+    //<div className="min-h-screen bg-pink-gradient flex flex-col items-center justify-center text-center p-4 font-body">
+    <div className="min-h-screen bg-gradient-to-b from-sky-200 via-blue-100 to-white flex flex-col items-center justify-center text-center p-4 font-body">
       <FloatingHearts />
       <PetalBackground /> 
 

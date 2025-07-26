@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 
 // Your next meetup date (midnight local on July 9):
-const MEET_DATE = new Date('2025-07-09T00:00:00')
+const MEET_DATE = new Date('2025-12-31T00:00:00')
 
 interface Countdown { days: number; hours: number; minutes: number }
 

@@ -160,7 +160,7 @@ export default function GalleryPage() {
    }, {});
 
   return (
-    <div className="p-4 bg-pink-50 min-h-screen">
+    <div className="p-4 bg-gradient-to-b from-sky-200 via-blue-100 min-h-screen">
       {/* Upload button */}
       <button
         onClick={() => setUploadOpen(true)}

@@ -57,7 +57,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-pink-50 flex flex-col items-center p-7 space-y-9">
+    <div className="min-h-screen bg-gradient-to-b from-sky-200 via-blue-100 flex flex-col items-center p-7 space-y-9">
       <h2 className="text-7xl font-heading text-pink-600">Your Profile</h2>
 
       <form
