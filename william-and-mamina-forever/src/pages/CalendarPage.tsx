@@ -117,7 +117,7 @@ export default function CalendarPage() {
               'text-4xl',
             ].join(' ')
             return date.toDateString() === new Date().toDateString()
-              ? `${base} bg-pink-100 font-bold`
+              ? `${base} bg-blue-100 font-bold`
               : base
           }}
         />
