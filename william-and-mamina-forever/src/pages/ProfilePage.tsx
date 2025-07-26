@@ -58,7 +58,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-200 via-blue-100 flex flex-col items-center p-7 space-y-9">
-      <h2 className="text-7xl font-heading text-pink-600">Your Profile</h2>
+      <h2 className="text-7xl font-heading text-blue-600">Your Profile</h2>
 
       <form
         onSubmit={handleSubmit}
@@ -79,7 +79,7 @@ export default function ProfilePage() {
               </div>
             )}
           </div>
-          <label className="mt-5 cursor-pointer text-3xl text-pink-600 underline">
+          <label className="mt-5 cursor-pointer text-3xl text-blue-600 underline">
             Change Photo
             <input
               type="file"
@@ -116,7 +116,7 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={saving}
-            className="bg-pink-600 text-white px-7 py-4 text-3xl rounded-md hover:bg-pink-700 transition"
+            className="bg-blue-600 text-white px-7 py-4 text-3xl rounded-md hover:bg-blue-700 transition"
           >
             {saving ? 'Saving…' : 'Save'}
           </button>

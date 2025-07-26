@@ -41,7 +41,7 @@ export default function TogetherTimer() {
   }, [])
 
 return (
-    <div className="text-4xl md:text-6xl font-mono text-pink-600">
+    <div className="text-4xl md:text-6xl font-mono text-blue-600">
       {diff.years}y {diff.months}m {diff.days}d
     </div>
   )

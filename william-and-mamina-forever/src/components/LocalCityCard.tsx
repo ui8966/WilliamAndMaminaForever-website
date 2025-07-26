@@ -58,7 +58,7 @@ export default function LocalCityCard({ city }: { city: City }) {
 
   return (
     <div className="flex-1 bg-white rounded-xl shadow-md p-6 space-y-4">
-      <h3 className="text-4xl font-medium text-pink-600">
+      <h3 className="text-4xl font-medium text-blue-600">
         {city.name}
       </h3>
 

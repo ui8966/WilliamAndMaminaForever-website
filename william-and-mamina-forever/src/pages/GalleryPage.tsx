@@ -164,7 +164,7 @@ export default function GalleryPage() {
       {/* Upload button */}
       <button
         onClick={() => setUploadOpen(true)}
-        className="fixed z-50 right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
+        className="fixed z-50 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition"
         style={{ bottom: 'calc(env(safe-area-inset-bottom) + 9rem)' }}
       >
         <Plus className="w-20 h-20" />
@@ -182,7 +182,7 @@ export default function GalleryPage() {
          onClick={() => setView(tab.key as ViewType)}
          className={`
            px-7 py-4 rounded-md text-3xl font-medium
-           ${view===tab.key ? 'bg-pink-600 text-white' : 'bg-white shadow'}
+           ${view===tab.key ? 'bg-blue-600 text-white' : 'bg-white shadow'}
          `}
        >
          {tab.label}
@@ -229,14 +229,14 @@ export default function GalleryPage() {
               setEDate(p.date)
               setEPlace(p.place)
             }}
-            className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
+            className="bg-white rounded-full p-5 shadow hover:bg-blue-50 text-2xl"
             title="Edit"
           >
-            <Edit2 className="w-10 h-10 text-pink-600" />
+            <Edit2 className="w-10 h-10 text-blue-600" />
           </button>
           <button
             onClick={() => handleDelete(p)}
-            className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"            title="Delete"
+            className="bg-white rounded-full p-5 shadow hover:bg-blue-50 text-2xl"            title="Delete"
           >
             <Trash2 className="w-10 h-10 text-red-600" />
           </button>
@@ -251,7 +251,7 @@ export default function GalleryPage() {
   <div className="space-y-8">
     {Object.entries(byDateGroups).map(([d,list]) => (
       <section key={d}>
-        <h2 className="text-4xl font-heading text-pink-600 mb-4">
+        <h2 className="text-4xl font-heading text-blue-600 mb-4">
           {format(new Date(d), 'PPP')}
         </h2>
         <div className="grid grid-cols-2 gap-6">
@@ -284,14 +284,14 @@ export default function GalleryPage() {
                     setEDate(p.date)
                     setEPlace(p.place)
                   }}
-                  className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
+                  className="bg-white rounded-full p-5 shadow hover:bg-blue-50 text-2xl"
                   title="Edit"
                 >
-                  <Edit2 className="w-10 h-10 text-pink-600" />
+                  <Edit2 className="w-10 h-10 text-blue-600" />
                 </button>
                 <button
                   onClick={() => handleDelete(p)}
-                  className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
+                  className="bg-white rounded-full p-5 shadow hover:bg-blue-50 text-2xl"
                   title="Delete"
                 >
                   <Trash2 className="w-10 h-10 text-red-600" />
@@ -310,7 +310,7 @@ export default function GalleryPage() {
   <div className="space-y-8">
     {Object.entries(byPlaceGroups).map(([city,list]) => (
       <section key={city}>
-        <h2 className="text-4xl font-heading text-pink-600 mb-4">{city}</h2>
+        <h2 className="text-4xl font-heading text-blue-600 mb-4">{city}</h2>
         <div className="grid grid-cols-2 gap-6">
           {list.map(p => (
             <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
@@ -341,14 +341,14 @@ export default function GalleryPage() {
                     setEDate(p.date)
                     setEPlace(p.place)
                   }}
-                  className="bg-white rounded-full p-5 shadow hover:bg-pink-100"
+                  className="bg-white rounded-full p-5 shadow hover:bg-blue-100"
                   title="Edit"
                 >
-                  <Edit2 className="w-10 h-10 text-pink-600" />
+                  <Edit2 className="w-10 h-10 text-blue-600" />
                 </button>
                 <button
                   onClick={() => handleDelete(p)}
-                  className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
+                  className="bg-white rounded-full p-5 shadow hover:bg-blue-50 text-2xl"
                   title="Delete"
                 >
                   <Trash2 className="w-10 h-10 text-red-600" />
@@ -380,7 +380,7 @@ export default function GalleryPage() {
             onSubmit={handleUpload}
             className="bg-white rounded-2xl p-8 w-full max-w-lg space-y-6"
           >
-            <h2 className="text-5xl font-heading text-pink-600 text-center">
+            <h2 className="text-5xl font-heading text-blue-600 text-center">
               Upload Photos
             </h2>
 
@@ -444,7 +444,7 @@ export default function GalleryPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2 bg-pink-600 text-white rounded text-3xl hover:bg-pink-700 transition"
+                className="px-6 py-2 bg-blue-600 text-white rounded text-3xl hover:bg-blue-700 transition"
               >
                 {saving ? 'Uploading…' : 'Upload'}
               </button>
@@ -526,17 +526,17 @@ export default function GalleryPage() {
                 setEPlace(previewOpen.place)
                 setPreviewOpen(null)
               }}
-              className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
+              className="bg-white rounded-full p-5 shadow hover:bg-blue-50 text-2xl"
               title="Edit"
               >
-              <Edit2 className="w-10 h-10 text-pink-600" />
+              <Edit2 className="w-10 h-10 text-blue-600" />
             </button>
             <button
               onClick={() => {
                 handleDelete(previewOpen)
                 setPreviewOpen(null)
               }}
-              className="bg-white rounded-full p-5 shadow hover:bg-pink-50 text-2xl"
+              className="bg-white rounded-full p-5 shadow hover:bg-blue-50 text-2xl"
               title="Delete"
             >
               <Trash2 className="w-10 h-10 text-red-600" />
@@ -554,7 +554,7 @@ export default function GalleryPage() {
             onSubmit={handleEdit}
             className="bg-white rounded-2xl p-8 w-full max-w-2xl space-y-6"
           >
-            <h2 className="text-5xl font-heading text-pink-600 text-center">
+            <h2 className="text-5xl font-heading text-blue-600 text-center">
               Edit Photo
             </h2>
 
@@ -602,7 +602,7 @@ export default function GalleryPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="px-7 py-3 bg-pink-600 text-white rounded text-3xl hover:bg-pink-700 transition"
+                className="px-7 py-3 bg-blue-600 text-white rounded text-3xl hover:bg-blue-700 transition"
               >
                 {saving ? 'Saving…' : 'Save Changes'}
               </button>

@@ -36,7 +36,7 @@ export default function RegisterPage() {
         onSubmit={handleSubmit} 
         className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md space-y-4"
       >
-        <h2 className="text-3xl font-heading text-pink-600 text-center">
+        <h2 className="text-3xl font-heading text-blue-600 text-center">
           Create an account
         </h2>
 
@@ -79,14 +79,14 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-pink-600 text-white p-2 rounded-md hover:bg-pink-700 transition"
+          className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition"
         >
           {loading ? 'Creating…' : 'Sign up'}
         </button>
 
         <p className="text-center text-sm">
           Already have an account?{' '}
-          <Link to="/login" className="text-pink-600 underline">
+          <Link to="/login" className="text-blue-600 underline">
             Log in
           </Link>
         </p>

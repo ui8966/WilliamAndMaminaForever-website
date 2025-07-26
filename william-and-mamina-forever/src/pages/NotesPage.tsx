@@ -143,12 +143,12 @@ return (
                     onClick={() => setPhotoModalSrc(note.authorPhoto!)}
                   />
                 ) : (
-                  <UserIcon className="w-20 h-20 text-pink-600" />
+                  <UserIcon className="w-20 h-20 text-blue-600" />
                 )}
                 <span className="font-semibold text-gray-800 text-2xl md:text-4xl">
                   {note.author}
                 </span>
-              {note.pinned && <PinIcon className="w-10 h-10 text-pink-600" />}
+              {note.pinned && <PinIcon className="w-10 h-10 text-blue-600" />}
 
               </div>
 
@@ -156,7 +156,7 @@ return (
               <div className="flex space-x-4">
                 <button
                   onClick={() => openEditor(note)}
-                  className="p-3 text-gray-500 hover:text-pink-600"
+                  className="p-3 text-gray-500 hover:text-blue-600"
                   title="Edit note"
                 >
                   <Edit2 className="w-12 h-12" />
@@ -187,7 +187,7 @@ return (
       {/* + New Note button */}
       <button
         onClick={() => openEditor()}
-        className="fixed right-6 bg-pink-600 text-white rounded-full p-4 shadow-lg hover:bg-pink-700 transition"
+        className="fixed right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition"
         style={{ bottom: 'calc(env(safe-area-inset-bottom) + 9rem)' }}
       >
         <Plus className="w-20 h-20" />
@@ -203,7 +203,7 @@ return (
             onSubmit={handleSave}
             className="bg-white p-9 rounded-2xl shadow-lg w-full max-w-7xl space-y-10"
           >
-            <h3 className="text-6xl font-heading text-pink-600 text-center">
+            <h3 className="text-6xl font-heading text-blue-600 text-center">
               {editingId ? 'Edit Note' : 'New Note'}
             </h3>
             <div className="flex items- justify-left space-x-3">
@@ -214,7 +214,7 @@ return (
                 onChange={e => setPinned(e.target.checked)}
                 className="w-11 h-11 "
               />
-              {<PinIcon className="w-11 h-11 text-pink-600" />}
+              {<PinIcon className="w-11 h-11 text-blue-600" />}
             </div>
             <textarea
               value={newContent}
@@ -232,7 +232,7 @@ return (
               <button
                 type="submit"
                 disabled={saving}
-                className="px-10 py-3 text-2xl bg-pink-600 text-white rounded-md hover:bg-pink-700 transition"
+                className="px-10 py-3 text-2xl bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
               >{saving ? 'Saving…' : editingId ? 'Save Changes' : 'Save'}</button>
             </div>
           </form>

@@ -33,13 +33,13 @@ export default function BottomNav() {
           key={i}
           to={to}
           className={({ isActive }) =>
-            `flex flex-col items-center text-gray-500 p-6 space-y-2 ${isActive ? 'text-pink-600' : ''}`
+            `flex flex-col items-center text-gray-500 p-6 space-y-2 ${isActive ? 'text-blue-600' : ''}`
      }        >
           <Icon className="w-16 h-16" />
           <span className="text-lg">{items[i].label}</span>
           { /* Active indicator */ }
           <div
-            className={`h-1 w-1 rounded-full bg-pink-600 mt-1 ${
+            className={`h-1 w-1 rounded-full bg-blue-600 mt-1 ${
               location.pathname === to ? 'block' : 'hidden'
             }`} 
           />

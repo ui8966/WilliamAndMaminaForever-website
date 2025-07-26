@@ -26,7 +26,7 @@ export default function CountdownTimer() {
   }, [])
 
   return (
-    <div className="text-4xl md:text-6xl font-mono text-pink-600">
+    <div className="text-4xl md:text-6xl font-mono text-blue-600">
       {count.days}d {count.hours}h {count.minutes}m
     </div>
   )

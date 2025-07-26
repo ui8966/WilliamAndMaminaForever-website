@@ -16,12 +16,12 @@ import type { City } from '../components/LocalCityCard'
 
 export default function HomePage() {
   return (
-    //<div className="min-h-screen bg-pink-gradient flex flex-col items-center justify-center text-center p-4 font-body">
+    //<div className="min-h-screen bg-blue-gradient flex flex-col items-center justify-center text-center p-4 font-body">
     <div className="min-h-screen bg-gradient-to-b from-sky-200 via-blue-100 to-white flex flex-col items-center justify-center text-center p-4 font-body">
       <FloatingHearts />
       <PetalBackground /> 
 
-      <h1 className="text-4xl md:text-6xl font-heading text-pink-600 mb-6 animate-bounce-slow">
+      <h1 className="text-4xl md:text-6xl font-heading text-blue-600 mb-6 animate-bounce-slow">
         💖 William & Mamina Forever 💖
       </h1>
 
