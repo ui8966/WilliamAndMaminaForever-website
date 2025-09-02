@@ -1,6 +1,7 @@
 // src/pages/GalleryPage.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type { FormEvent } from 'react'
+import { useMemo } from 'react'
 import {
   collection,
   onSnapshot,
@@ -30,6 +31,8 @@ interface Photo {
   caption: string
   date: string       // ISO YYYY-MM-DD
   place: string
+  time?: string       // "HH:mm" (optional)
+  takenAt?: string    // ISO datetime (optional)
 }
 
 export default function GalleryPage() {
@@ -47,11 +50,17 @@ export default function GalleryPage() {
   const [date, setDate]       = useState<string>('')
   const [place, setPlace]     = useState('')
   const [saving, setSaving]   = useState(false)
+  const [time, setTime] = useState<string>('')        // upload form
+  const [eTime, setETime] = useState<string>('')      // edit form
 
   // edit form (populated from editOpen)
   const [eCaption, setECaption] = useState('')
   const [eDate, setEDate]       = useState('')
   const [ePlace, setEPlace]     = useState('')
+
+  const [setTimeOpen, setSetTimeOpen] = useState<Photo | null>(null)
+  const [quickTime, setQuickTime] = useState<string>('')
+  const longPressTimer = useRef<number | null>(null)
 
   // --- fetch all photos ---
   useEffect(() => {
@@ -66,6 +75,8 @@ export default function GalleryPage() {
           caption:   data.caption,
           date:      data.date,
           place:     data.place,
+          time:      data.time ?? undefined,
+          takenAt:   data.takenAt ?? undefined,
         }
       })
       setPhotos(list)
@@ -87,6 +98,10 @@ export default function GalleryPage() {
         await new Promise((res, rej) =>
           task.on('state_changed', null, rej, () => res(undefined))
         )
+
+        const localTime = time || '12:00'
+        const takenAtISO = date ? new Date(`${date}T${localTime}:00`).toISOString() : null
+
         const url = await getDownloadURL(ref)
         await addDoc(collection(firestore, 'photos'), {
           url,
@@ -94,6 +109,8 @@ export default function GalleryPage() {
           caption,
           date,
           place,
+          time: time || null,
+          takenAt: takenAtISO,
           createdAt: serverTimestamp(),
         })
       }
@@ -102,6 +119,7 @@ export default function GalleryPage() {
       setCaption('')
       setDate('')
       setPlace('')
+      setTime('')
       setUploadOpen(false)
     } catch (err) {
       console.error('Upload failed', err)
@@ -116,11 +134,15 @@ export default function GalleryPage() {
     if (!editOpen) return
     setSaving(true)
     try {
+      const localTime = eTime || '12:00'
+      const newTakenAt = eDate ? new Date(`${eDate}T${localTime}:00`).toISOString() : null
       const ref = doc(firestore, 'photos', editOpen.id)
       await updateDoc(ref, {
         caption: eCaption,
         date:    eDate,
         place:   ePlace,
+        time:     eTime || null,
+        takenAt:  newTakenAt,
         updatedAt: serverTimestamp(),
       })
       setEditOpen(null)
@@ -144,20 +166,44 @@ export default function GalleryPage() {
     }
   }
 
-   // --- grouping for the two new views ---
- const byDateGroups = photos
-   .sort((a,b)=> a.date.localeCompare(b.date))
-   .reduce<Record<string, Photo[]>>((acc,p)=>{
-     (acc[p.date] ??= []).push(p)
-     return acc
-   }, {})
+  const sortedPhotos = useMemo(() => {
+    return [...photos].sort((a, b) => {
+      const A = a.takenAt || a.date
+      const B = b.takenAt || b.date
+      return A.localeCompare(B)
+    })
+  }, [photos])
 
- const byPlaceGroups = photos
-   .reduce<Record<string, Photo[]>>((acc, p) => {
+   // --- grouping for the two new views ---
+  const byDateGroups = useMemo(() => {
+  return sortedPhotos.reduce<Record<string, Photo[]>>((acc, p) => {
+    (acc[p.date] ??= []).push(p)
+    return acc
+  }, {})
+}, [sortedPhotos])
+
+ const byPlaceGroups = useMemo(() => {
+   return sortedPhotos.reduce<Record<string, Photo[]>>((acc, p) => {
      const city = p.place.split(',')[0];
      (acc[city] ??= []).push(p);
      return acc;
    }, {});
+}, [sortedPhotos]);
+
+   function startLongPress(p: Photo) {
+    if (longPressTimer.current) window.clearTimeout(longPressTimer.current)
+    longPressTimer.current = window.setTimeout(() => {
+      setSetTimeOpen(p)
+      setQuickTime(p.time || '')
+    }, 500) as unknown as number
+  }
+
+  function cancelLongPress() {
+    if (longPressTimer.current) {
+      window.clearTimeout(longPressTimer.current)
+      longPressTimer.current = null
+    }
+  }
 
   return (
     <div className="p-4 bg-gradient-to-b from-sky-200 via-blue-100 min-h-screen">
@@ -193,13 +239,18 @@ export default function GalleryPage() {
    {/* ─── ALL PHOTOS ───────────────────────── */}
 {view==='all' && (
   <div className="grid grid-cols-2 gap-6">
-    {photos.map(p => (
+    {sortedPhotos.map(p => (
       <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
         {/* Preview on click */}
         <button
           onClick={() => setPreviewOpen(p)}
-          className="block w-full focus:outline-none" 
-        >  
+          onMouseDown={() => startLongPress(p)}
+          onMouseUp={cancelLongPress}
+          onMouseLeave={cancelLongPress}
+          onTouchStart={() => startLongPress(p)}
+          onTouchEnd={cancelLongPress}
+          className="block w-full focus:outline-none"
+        >
         <img
           src={p.url}
           alt={p.caption}
@@ -228,6 +279,7 @@ export default function GalleryPage() {
               setECaption(p.caption)
               setEDate(p.date)
               setEPlace(p.place)
+              setETime(p.time || '')
             }}
             className="bg-white rounded-full p-5 shadow hover:bg-blue-50 text-2xl"
             title="Edit"
@@ -257,10 +309,15 @@ export default function GalleryPage() {
         <div className="grid grid-cols-2 gap-6">
           {list.map(p => (
             <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
-              <button
-                onClick={() => setPreviewOpen(p)}
-                className="block w-full focus:outline-none"
-              >
+            <button
+              onClick={() => setPreviewOpen(p)}
+              onMouseDown={() => startLongPress(p)}
+              onMouseUp={cancelLongPress}
+              onMouseLeave={cancelLongPress}
+              onTouchStart={() => startLongPress(p)}
+              onTouchEnd={cancelLongPress}
+              className="block w-full focus:outline-none"
+            >
               <img
                 src={p.url}
                 alt={p.caption}
@@ -283,6 +340,7 @@ export default function GalleryPage() {
                     setECaption(p.caption)
                     setEDate(p.date)
                     setEPlace(p.place)
+                    setETime(p.time || '') 
                   }}
                   className="bg-white rounded-full p-5 shadow hover:bg-blue-50 text-2xl"
                   title="Edit"
@@ -314,10 +372,15 @@ export default function GalleryPage() {
         <div className="grid grid-cols-2 gap-6">
           {list.map(p => (
             <div key={p.id} className="relative bg-white rounded-2xl shadow overflow-hidden">
-              <button
-                onClick={() => setPreviewOpen(p)}
-                className="block w-full focus:outline-none"
-              >
+            <button
+              onClick={() => setPreviewOpen(p)}
+              onMouseDown={() => startLongPress(p)}
+              onMouseUp={cancelLongPress}
+              onMouseLeave={cancelLongPress}
+              onTouchStart={() => startLongPress(p)}
+              onTouchEnd={cancelLongPress}
+              className="block w-full focus:outline-none"
+            >
               <img
                 src={p.url}
                 alt={p.caption}
@@ -340,6 +403,7 @@ export default function GalleryPage() {
                     setECaption(p.caption)
                     setEDate(p.date)
                     setEPlace(p.place)
+                    setETime(p.time || '')
                   }}
                   className="bg-white rounded-full p-5 shadow hover:bg-blue-100"
                   title="Edit"
@@ -433,6 +497,16 @@ export default function GalleryPage() {
               />
             </label>
 
+            <label className="block">
+              <span className="text-4xl">Time (optional)</span>
+              <input
+                type="time"
+                value={time}
+                onChange={e => setTime(e.target.value)}
+                className="mt-2 w-full text-3xl rounded-md border-gray-300 p-2"
+              />
+            </label>
+
             <div className="flex justify-end space-x-4">
               <button
                 type="button"
@@ -455,7 +529,7 @@ export default function GalleryPage() {
 
       {/* Preview Modal */}
       {previewOpen && (() => {
-        const idx = photos.findIndex(p => p.id === previewOpen.id)
+        const idx = sortedPhotos.findIndex(p => p.id === previewOpen.id)
         return (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-6"
@@ -469,7 +543,7 @@ export default function GalleryPage() {
               {/* Prev arrow */}
               {idx > 0 && (
                 <button
-                  onClick={() => setPreviewOpen(photos[idx - 1])}
+                  onClick={() => setPreviewOpen(sortedPhotos[idx - 1])}
                   className="absolute left-1 top-1/2 -translate-y-1/2 text-[10rem] text-gray-400 hover:text-gray-600"
                   title="Previous photo"
                 >
@@ -478,9 +552,9 @@ export default function GalleryPage() {
               )}
 
               {/* Next arrow */}
-              {idx < photos.length - 1 && (
+              {idx < sortedPhotos.length - 1 && (
                 <button
-                  onClick={() => setPreviewOpen(photos[idx + 1])}
+                  onClick={() => setPreviewOpen(sortedPhotos[idx + 1])}
                   className="absolute right-1 top-1/2 -translate-y-1/2 text-[10rem]  text-gray-400 hover:text-gray-600"
                   title="Next photo"
                 >
@@ -524,6 +598,7 @@ export default function GalleryPage() {
                 setECaption(previewOpen.caption)
                 setEDate(previewOpen.date)
                 setEPlace(previewOpen.place)
+                setETime(previewOpen.time || '')
                 setPreviewOpen(null)
               }}
               className="bg-white rounded-full p-5 shadow hover:bg-blue-50 text-2xl"
@@ -591,6 +666,16 @@ export default function GalleryPage() {
               />
             </label>
 
+            <label className="block">
+              <span className="text-4xl">Time (optional)</span>
+              <input
+                type="time"
+                value={eTime}
+                onChange={e => setETime(e.target.value)}
+                className="mt-2 w-full text-4xl rounded-md border-gray-300 p-2"
+              />
+            </label>
+
             <div className="flex justify-end space-x-4">
               <button
                 type="button"
@@ -610,6 +695,56 @@ export default function GalleryPage() {
           </form>
         </div>
       )}
+
+      {setTimeOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-6"
+          onClick={() => setSetTimeOpen(null)}
+        >
+          <div
+            className="bg-white rounded-2xl p-6 w-full max-w-md"
+            onClick={e => e.stopPropagation()}
+          >
+            <h3 className="text-4xl mb-4">Set time</h3>
+            <input
+              type="time"
+              value={quickTime}
+              onChange={e => setQuickTime(e.target.value)}
+              className="w-full text-3xl rounded-md border-gray-300 p-2"
+            />
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                className="px-6 py-2 rounded border text-3xl"
+                onClick={() => setSetTimeOpen(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-6 py-2 rounded bg-blue-600 text-white text-3xl hover:bg-blue-700"
+                onClick={async () => {
+                  if (!setTimeOpen) return
+                  const ref = doc(firestore, 'photos', setTimeOpen.id)
+                  const baseDate = setTimeOpen.date
+                  const localTime = quickTime || '12:00'
+                  const takenAt = baseDate
+                    ? new Date(`${baseDate}T${localTime}:00`).toISOString()
+                    : null
+                  await updateDoc(ref, {
+                    time: quickTime || null,
+                    takenAt,
+                    updatedAt: serverTimestamp(),
+                  })
+                  setSetTimeOpen(null)
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </div>
   )
 }
