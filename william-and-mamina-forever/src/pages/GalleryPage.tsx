@@ -77,6 +77,8 @@ function SimpleMap({
   onOpenPhoto: (id: string) => void
 }) {
   const mapRef = useRef<L.Map | null>(null)
+  const [ready, setReady] = useState(false);
+
 
   // Fit once when points first appear or the count changes
   useEffect(() => {
@@ -90,34 +92,42 @@ function SimpleMap({
     map.fitBounds(bounds.pad(0.2), { animate: false })
   }, [points.length])
 
+  
   return (
+    <div className="relative h-full w-full">
       <MapContainer
-      ref={mapRef}
-      center={[20, 0]}
-      zoom={2}
-      scrollWheelZoom
-      className="h-full w-full"
-    >
-      <TileLayer
-        attribution="&copy; OpenStreetMap contributors"
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+        whenReady={() => setReady(true)}
+        // if tiles ever hang, changing this key remounts the map (see below)
+        // key={mapKey}
+        ref={mapRef}
+        center={[20, 0]}
+        zoom={2}
+        scrollWheelZoom
+        tapTolerance={20}
+        className="h-full w-full"
+      >
+        <TileLayer
+          attribution="&copy; OpenStreetMap contributors"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
-      {points.map(p => (
-        <Marker
-          key={p.id}
-          position={[p.lat, p.lng]}
-          icon={leafletDefaultIcon}
-          
-          eventHandlers={{ click: () => onOpenPhoto(p.id) }}
-        >
-          <Tooltip direction="top" offset={[0, -10]} opacity={1}>
-            <div className="text-sm font-medium">{p.caption}</div>
-          </Tooltip>
-        </Marker>
-      ))}
-    </MapContainer>
-  )
+        {points.map(p => (
+          <Marker key={p.id} position={[p.lat, p.lng]} icon={leafletDefaultIcon}
+                  eventHandlers={{ click: () => onOpenPhoto(p.id) }}>
+            <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+              <div className="text-sm font-medium">{p.caption}</div>
+            </Tooltip>
+          </Marker>
+        ))}
+      </MapContainer>
+
+      {!ready && (
+        <div className="absolute inset-0 grid place-items-center bg-white/70">
+          <div className="rounded-xl px-4 py-2 text-gray-700 shadow">Loading map…</div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function GalleryPage() {
