@@ -1,5 +1,16 @@
 // src/pages/GalleryPage.tsx
 import { useState, useEffect, useRef } from 'react'
+import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png?url'
+import markerIcon   from 'leaflet/dist/images/marker-icon.png?url'
+import markerShadow from 'leaflet/dist/images/marker-shadow.png?url'
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+})
+import { MapContainer, TileLayer, Marker, Tooltip} from 'react-leaflet'
 import type { FormEvent } from 'react'
 import { useMemo } from 'react'
 import {
@@ -9,6 +20,8 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  getDoc,
+  setDoc,
   serverTimestamp,
   type DocumentData,
   type QueryDocumentSnapshot,
@@ -33,6 +46,68 @@ interface Photo {
   place: string
   time?: string       // "HH:mm" (optional)
   takenAt?: string    // ISO datetime (optional)
+}
+
+export const leafletDefaultIcon = new L.Icon({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41],
+})
+
+function SimpleMap({
+  points,
+  onOpenPhoto,
+}: {
+  points: { id: string; lat: number; lng: number; caption: string }[]
+  onOpenPhoto: (id: string) => void
+}) {
+  const mapRef = useRef<L.Map | null>(null)
+
+  // Fit once when points first appear or the count changes
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    if (points.length === 0) {
+      map.setView([20, 0], 2)
+      return
+    }
+    const bounds = L.latLngBounds(points.map(p => [p.lat, p.lng] as [number, number]))
+    map.fitBounds(bounds.pad(0.2), { animate: false })
+  }, [points.length])
+
+  return (
+      <MapContainer
+      ref={mapRef}
+      center={[20, 0]}
+      zoom={2}
+      scrollWheelZoom
+      className="h-full w-full"
+    >
+      <TileLayer
+        attribution="&copy; OpenStreetMap contributors"
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
+      {points.map(p => (
+        <Marker
+          key={p.id}
+          position={[p.lat, p.lng]}
+          icon={leafletDefaultIcon}
+          
+          eventHandlers={{ click: () => onOpenPhoto(p.id) }}
+        >
+          <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+            <div className="text-sm font-medium">{p.caption}</div>
+          </Tooltip>
+        </Marker>
+      ))}
+    </MapContainer>
+  )
 }
 
 export default function GalleryPage() {
@@ -62,6 +137,52 @@ export default function GalleryPage() {
   const [quickTime, setQuickTime] = useState<string>('')
   const longPressTimer = useRef<number | null>(null)
 
+  // cache of geocoded places -> coords
+  const [placeCoords, setPlaceCoords] =
+    useState<Record<string, { lat: number; lng: number }>>({})
+
+  // slug/id for the "places" collection
+  const keyForPlace = (s: string) =>
+    s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')
+
+  /// Mapbox if token exists, otherwise OpenStreetMap (Nominatim) with no key.
+  async function geocodePlace(place: string): Promise<{ lat: number; lng: number } | null> {
+    const token = import.meta.env.VITE_MAPBOX_TOKEN
+
+    const quick: Record<string, { lat: number; lng: number }> = {
+      "oslo, norway": { lat: 59.9139, lng: 10.7522 },
+    }
+    const key = place.trim().toLowerCase()
+    if (quick[key]) return quick[key]
+
+    try {
+      if (token) {
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(place)}.json?access_token=${token}&limit=1`
+        const res = await fetch(url)
+        const data = await res.json()
+        const f = data?.features?.[0]
+        if (!f?.center) return null
+        const [lng, lat] = f.center
+        return { lat, lng }
+      } else {
+        // Nominatim (no token). We cache results in Firestore so this is light.
+        const email = import.meta.env.VITE_NOMINATIM_EMAIL // optional courtesy
+        const url =
+          `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(place)}` +
+          (email ? `&email=${encodeURIComponent(email)}` : '')
+        const res = await fetch(url, { headers: { Accept: 'application/json' } })
+        const arr = await res.json()
+        const hit = Array.isArray(arr) ? arr[0] : null
+        if (!hit) return null
+        return { lat: parseFloat(hit.lat), lng: parseFloat(hit.lon) }
+      }
+    } catch (e) {
+      console.error('Geocode failed', e)
+      return null
+    }
+  }
+
+
   // --- fetch all photos ---
   useEffect(() => {
     const col = collection(firestore, 'photos')
@@ -83,6 +204,54 @@ export default function GalleryPage() {
     })
     return () => unsub()
   }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      // unique, non-empty places
+      const uniquePlaces = Array.from(
+        new Set(photos.map(p => p.place).filter(Boolean))
+      )
+
+      for (const place of uniquePlaces) {
+        if (cancelled) break
+        if (placeCoords[place]) continue
+
+        // 1) check Firestore cache
+        const id = keyForPlace(place)
+        const ref = doc(firestore, 'places', id)
+        const snap = await getDoc(ref)
+        if (snap.exists()) {
+          const d = snap.data() as { lat?: number; lng?: number }
+          if (typeof d.lat === 'number' && typeof d.lng === 'number') {
+            if (!cancelled) {
+              setPlaceCoords(prev => ({
+                ...prev,
+                [place]: { lat: d.lat as number, lng: d.lng as number }
+              }))
+            }
+            continue
+          }
+        }
+
+      // 2) geocode if we have a token (or Nominatim)
+      const coords = await geocodePlace(place)
+      if (coords) {
+        // try to cache to Firestore, but don't let failures stop UI
+        try {
+          await setDoc(ref, { place, ...coords, createdAt: serverTimestamp() })
+        } catch (err) {
+          console.warn('Caching place failed (ok to ignore):', place, err)
+        }
+        if (!cancelled) {
+          setPlaceCoords(prev => ({ ...prev, [place]: coords }))
+        }
+      }
+      }
+    })()
+    return () => { cancelled = true }
+  }, [photos]) // eslint-disable-line react-hooks/exhaustive-deps
+
 
   // --- upload handler ---
   async function handleUpload(e: FormEvent) {
@@ -190,6 +359,19 @@ export default function GalleryPage() {
    }, {});
 }, [sortedPhotos]);
 
+const simplePoints = useMemo(() => {
+  return sortedPhotos.flatMap(p => {
+    const c = placeCoords[p.place]
+    if (!c) return []
+    return [{
+      id: p.id,
+      lat: c.lat,
+      lng: c.lng,
+      caption: p.caption || 'Photo',
+    }]
+  })
+}, [sortedPhotos, placeCoords])
+
    function startLongPress(p: Photo) {
     if (longPressTimer.current) window.clearTimeout(longPressTimer.current)
     longPressTimer.current = window.setTimeout(() => {
@@ -204,6 +386,7 @@ export default function GalleryPage() {
       longPressTimer.current = null
     }
   }
+
 
   return (
     <div className="p-4 bg-gradient-to-b from-sky-200 via-blue-100 min-h-screen">
@@ -225,6 +408,7 @@ export default function GalleryPage() {
        { key: 'map', label:'Map View' },
      ].map(tab => (
        <button
+         key={tab.key} 
          onClick={() => setView(tab.key as ViewType)}
          className={`
            px-7 py-4 rounded-md text-3xl font-medium
@@ -426,13 +610,30 @@ export default function GalleryPage() {
   </div>
 )}
 
-{view==='map' && (
-    <div className="p-4 text-gray-700">
-        <p className="text-3xl font-bold text-center text-blue-600">
-        I will add a map view here! 🌍
-        </p>
-    </div>
+{view === 'map' && (
+  <div className="relative h-[70vh] rounded-2xl overflow-hidden shadow">
+    <SimpleMap
+      points={simplePoints}
+      onOpenPhoto={(id) => {
+        const p = sortedPhotos.find(pp => pp.id === id)
+        if (p) setPreviewOpen(p)
+      }}
+    />
+
+    {simplePoints.length === 0 && (
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="bg-white/90 px-6 py-4 rounded-xl shadow text-center">
+          <div className="text-lg font-semibold text-gray-800">No locations yet</div>
+          <div className="text-gray-600 mt-1">
+            Add photos with a <em>Place</em> (e.g., “Oslo, Norway”).
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
 )}
+
+
 
       {/* ─── bottom spacer so last caption scrolls up safely ─── */}
       <div className="h-32" />
@@ -532,7 +733,7 @@ export default function GalleryPage() {
         const idx = sortedPhotos.findIndex(p => p.id === previewOpen.id)
         return (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-6"
+            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black bg-opacity-75 p-6"
             onClick={() => setPreviewOpen(null)}
           >
             <div
