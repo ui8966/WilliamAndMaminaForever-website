@@ -48,16 +48,26 @@ interface Photo {
   takenAt?: string    // ISO datetime (optional)
 }
 
+const PIN_SCALE = 3; // tweak between 1.5–2.0 to taste
+
 export const leafletDefaultIcon = new L.Icon({
-  iconUrl: markerIcon,
+  iconUrl: markerIcon,          // keep standard + retina for best clarity
   iconRetinaUrl: markerIcon2x,
   shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  tooltipAnchor: [16, -28],
-  shadowSize: [41, 41],
-})
+
+  // base (25x41) * scale
+  iconSize: [Math.round(25 * PIN_SCALE), Math.round(41 * PIN_SCALE)],
+
+  // keep the point of the pin at the correct lat/lng (bottom-center)
+  iconAnchor: [Math.round(12 * PIN_SCALE), Math.round(41 * PIN_SCALE)],
+
+  // position popups/tooltips relative to the bigger icon
+  popupAnchor: [Math.round(1 * PIN_SCALE), Math.round(-34 * PIN_SCALE)],
+  tooltipAnchor: [Math.round(16 * PIN_SCALE), Math.round(-28 * PIN_SCALE)],
+
+  // scale the shadow too (not critical if you want to keep default)
+  shadowSize: [Math.round(41 * PIN_SCALE), Math.round(41 * PIN_SCALE)],
+});
 
 function SimpleMap({
   points,
